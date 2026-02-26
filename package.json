@@ -1,0 +1,16 @@
+{
+  "name": "verbose",
+  "private": true,
+  "scripts": {
+    "build": "pnpm -r run build",
+    "dev": "pnpm -r --parallel run dev",
+    "typecheck": "pnpm -r run typecheck",
+    "docs:dev": "pnpm --filter @verbose/docs docs:dev",
+    "docs:build": "pnpm --filter @verbose/docs docs:build",
+    "docs:preview": "pnpm --filter @verbose/docs docs:preview"
+  },
+  "packageManager": "pnpm@10.30.2",
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}
