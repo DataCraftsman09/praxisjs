@@ -25,9 +25,5 @@
   "packageManager": "pnpm@10.30.2",
   "devDependencies": {
     "typescript": "^5.9.3"
-  },
-  "dependencies": {
-    "@verbose/core": "workspace:*",
-    "@verbose/runtime": "workspace:*"
   }
 }
