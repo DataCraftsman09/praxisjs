@@ -117,6 +117,9 @@ importers:
       '@verbose/jsx':
         specifier: workspace:*
         version: link:../../foundation/jsx
+      '@verbose/shared':
+        specifier: workspace:*
+        version: link:../../foundation/shared
     devDependencies:
       typescript:
         specifier: ^5.9.3
