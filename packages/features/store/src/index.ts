@@ -1,2 +1,2 @@
 export { createStore } from "./create-store";
-export { Store, UseStore } from "./store.decorators";
+export { Store, UseStore } from "./decorators";

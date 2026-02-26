@@ -6,7 +6,7 @@ export {
   InjectContainer,
   useService,
   createScope,
-} from "./di.decorators";
+} from "./decorators";
 export { Container, container, Token, token } from "./container";
 export type {
   Scope,

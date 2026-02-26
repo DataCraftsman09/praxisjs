@@ -15,4 +15,4 @@ export type {
 } from "./types/route";
 
 export { RouterView, Link } from "./components";
-export { Route } from "./router.decorators";
+export { Route } from "./decorators";
