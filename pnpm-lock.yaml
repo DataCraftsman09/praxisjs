@@ -91,13 +91,6 @@ importers:
         version: 5.9.3
 
   packages/jsx:
-    dependencies:
-      '@verbose/core':
-        specifier: workspace:*
-        version: link:../core
-      '@verbose/runtime':
-        specifier: workspace:*
-        version: link:../runtime
     devDependencies:
       typescript:
         specifier: ^5.9.3

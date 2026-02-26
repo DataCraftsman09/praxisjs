@@ -13,6 +13,7 @@ export {
   peek,
   computed,
   batch,
+  effect,
   type Computed,
   type Signal,
   type PersistedSignalOptions,

@@ -25,6 +25,21 @@ export type FunctionComponent<P = {}> = (
 export interface ComponentConstructor<P = {}> {
   new (props: P): ComponentInstance;
   isComponent: true;
+  isMemorized?: boolean;
+  arePropsEqual: (
+    prevProps: Record<string, unknown>,
+    nextProps: Record<string, unknown>,
+  ) => boolean;
 }
 
-export interface ComponentInstance {}
+export interface ComponentInstance {
+  _mounted: boolean;
+  _stateDirty: boolean;
+  _lastResolvedProps?: Record<string, unknown>;
+  _setProps(p: Record<string, unknown>): void;
+  render(): VNode | null;
+  onBeforeMount?(): void;
+  onMount?(): void;
+  onUnmount?(): void;
+  onError?(e: Error): void;
+}
