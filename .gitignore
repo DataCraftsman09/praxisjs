@@ -42,3 +42,8 @@ Thumbs.db
 
 # Tests
 coverage/
+
+# vitepress build output
+docs/.vitepress/dist
+docs/.vitepress/cache
+docs/.vitepress/.temp
