@@ -1,0 +1,13 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@verbose/core": ["../../packages/core/src/index.ts"],
+      "@verbose/jsx": ["../../packages/jsx/src/index.ts"],
+      "@verbose/jsx/jsx-runtime": ["../../packages/jsx/src/jsx-runtime.ts"],
+      "@verbose/runtime": ["../../packages/runtime/src/index.ts"]
+    }
+  },
+  "include": ["src", "vite.config.ts"]
+}

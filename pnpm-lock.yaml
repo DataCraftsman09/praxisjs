@@ -188,6 +188,28 @@ importers:
         specifier: ^7.3.1
         version: 7.3.1(@types/node@25.3.0)
 
+  playground:
+    dependencies:
+      '@verbose/core':
+        specifier: workspace:*
+        version: link:../packages/core
+      '@verbose/jsx':
+        specifier: workspace:*
+        version: link:../packages/jsx
+      '@verbose/runtime':
+        specifier: workspace:*
+        version: link:../packages/runtime
+    devDependencies:
+      '@verbose/vite-plugin':
+        specifier: workspace:*
+        version: link:../packages/vite-plugin
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vite:
+        specifier: ^7.3.1
+        version: 7.3.1(@types/node@25.3.0)
+
 packages:
 
   '@algolia/abtesting@1.15.1':
