@@ -1,9 +1,6 @@
-import { track, activeEffect, runEffect, type Effect } from "./effect";
+import type { Computed } from "@verbose/shared";
 
-export interface Computed<T> {
-  (): T;
-  subscribe(effect: (value: T) => void): () => void;
-}
+import { track, activeEffect, runEffect, type Effect } from "./effect";
 
 export function computed<T>(computeFn: () => T): Computed<T> {
   let cachedValue: T;
@@ -12,7 +9,9 @@ export function computed<T>(computeFn: () => T): Computed<T> {
 
   const recompute = () => {
     dirty = false;
-    [...subscribers].forEach((sub) => sub());
+    [...subscribers].forEach((sub) => {
+      sub();
+    });
   };
 
   function read() {
@@ -32,7 +31,9 @@ export function computed<T>(computeFn: () => T): Computed<T> {
   }
 
   function subscribe(fn: (value: T) => void) {
-    const wrappedEffect = () => fn(read());
+    const wrappedEffect = () => {
+      fn(read());
+    };
     subscribers.add(wrappedEffect);
     wrappedEffect();
     return () => subscribers.delete(wrappedEffect);

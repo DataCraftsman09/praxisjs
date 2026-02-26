@@ -1,4 +1,6 @@
-import { Signal, signal } from "./signal";
+import type { Signal } from "@verbose/shared";
+
+import { signal } from "./signal";
 
 export interface PersistedSignalOptions<T> {
   serialize?: (value: T) => string;
@@ -13,7 +15,7 @@ export function persistedSignal<T>(
 ) {
   const {
     serialize = JSON.stringify,
-    deserialize = JSON.parse,
+    deserialize = JSON.parse as (value: string) => T,
     syncTabs = true,
   } = options;
 

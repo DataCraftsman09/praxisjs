@@ -1,6 +1,7 @@
-import { computed, Computed, signal, Signal } from "../signal";
+import { type Computed, isSignal, type Signal } from "@verbose/shared";
+
+import { computed, signal } from "../signal";
 import { effect } from "../signal/effect";
-import { isSignal } from "../utils/signal-utils";
 
 export interface History<T> {
   readonly values: Computed<T[]>;

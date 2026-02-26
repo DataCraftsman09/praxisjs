@@ -1,11 +1,6 @@
-import { track, activeEffect, type Effect } from "./effect";
+import type { Signal } from "@verbose/shared";
 
-export interface Signal<T> {
-  (): T;
-  set(value: T): void;
-  update(updater: (prev: T) => T): void;
-  subscribe(effect: (value: T) => void): () => void;
-}
+import { activeEffect, type Effect } from "./effect";
 
 export function signal<T>(initialValue: T): Signal<T> {
   let value = initialValue;
@@ -22,7 +17,9 @@ export function signal<T>(initialValue: T): Signal<T> {
     if (Object.is(value, newValue)) return;
 
     value = newValue;
-    [...subscribers].forEach((sub) => sub());
+    [...subscribers].forEach((sub) => {
+      sub();
+    });
   }
 
   function update(fn: (prev: T) => T) {
@@ -30,7 +27,9 @@ export function signal<T>(initialValue: T): Signal<T> {
   }
 
   function subscribe(fn: (value: T) => void) {
-    const wrapped = () => fn(value);
+    const wrapped = () => {
+      fn(value);
+    };
     subscribers.add(wrapped);
     wrapped();
     return () => subscribers.delete(wrapped);

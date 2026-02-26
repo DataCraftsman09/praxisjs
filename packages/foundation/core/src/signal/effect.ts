@@ -19,8 +19,10 @@ export function runEffect(effect: Effect | null) {
   activeEffect = effect;
 }
 
-export function effect(fn: () => void | (() => void)) {
-  let cleanup: void | (() => void);
+type Cleanup = (() => void) | undefined;
+
+export function effect(fn: () => Cleanup) {
+  let cleanup: Cleanup;
 
   const wrappedEffect = () => {
     cleanup?.();

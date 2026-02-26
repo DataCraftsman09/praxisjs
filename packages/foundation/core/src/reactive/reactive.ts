@@ -1,4 +1,6 @@
-import { Computed, signal, Signal } from "../signal";
+import type { Computed, Signal } from "@verbose/shared";
+
+import { signal } from "../signal";
 import { effect } from "../signal/effect";
 
 export function when<T>(
@@ -14,7 +16,7 @@ export function when<T>(
 
     disposed = true;
     stop();
-    fn(value as NonNullable<T>);
+    fn(value);
   });
 
   return stop;

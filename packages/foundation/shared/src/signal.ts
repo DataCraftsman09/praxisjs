@@ -1,6 +1,5 @@
-import { Computed, Signal } from "../signal";
+import type { Computed, Signal } from "./types/signal";
 
-// TODO: Migrage this to a separate package
 export function isSignal<T>(
   source: Signal<T> | Computed<T> | (() => T),
 ): boolean {

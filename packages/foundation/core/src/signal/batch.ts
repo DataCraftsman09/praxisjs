@@ -1,4 +1,4 @@
-import { track, activeEffect, type Effect } from "./effect";
+import type { Effect } from "./effect";
 
 let batchQueue: Set<Effect> | null = null;
 
@@ -9,6 +9,6 @@ export function batch(fn: () => void) {
   } finally {
     const effectsToRun = batchQueue;
     batchQueue = null;
-    effectsToRun?.forEach((eff) => eff());
+    effectsToRun.forEach((eff) => { eff(); });
   }
 }

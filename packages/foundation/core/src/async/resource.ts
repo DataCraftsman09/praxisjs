@@ -1,4 +1,6 @@
-import { computed, Computed, Signal, signal } from "../signal";
+import type { Computed, Signal } from "@verbose/shared";
+
+import { computed, signal } from "../signal";
 import { effect } from "../signal/effect";
 
 export type ResourceStatus = "idle" | "pending" | "success" | "error";
@@ -49,7 +51,7 @@ export function resource<T>(
       _data.set(result);
       _error.set(null);
       _status.set("success");
-    }).catch((err) => {
+    }).catch((err: unknown) => {
       if (currentRunId !== _runId) return;
       _error.set(err instanceof Error ? err : new Error(String(err)));
       _status.set("error");

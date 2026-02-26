@@ -1,6 +1,6 @@
-import { Computed } from "./computed";
-import { track, activeEffect, runEffect, type Effect } from "./effect";
-import { Signal } from "./signal";
+import type { Computed, Signal } from "@verbose/shared";
+
+import { activeEffect, runEffect } from "./effect";
 
 export function peek<T>(source: Signal<T> | Computed<T> | (() => T)): T {
   const prev = activeEffect;

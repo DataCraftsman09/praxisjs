@@ -1,4 +1,4 @@
-import {
+import type {
   Children,
   ComponentConstructor,
   FunctionComponent,
@@ -59,15 +59,16 @@ export const jsxDEV = jsx;
 
 export const Fragment = Symbol("Fragment");
 
+// eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace JSX {
-  export interface Element extends VNode {}
+  export type Element = VNode;
 
-  type GlobalAttributes = {
+  interface GlobalAttributes {
     key?: string | number | symbol;
-  };
+  }
 
-  // Inferir props a partir das propriedades de instância da classe
-  // (exclui lifecycle e métodos)
+  // Infer props from the class instance properties
+  // (excludes lifecycle and methods)
   type InstancePropsOf<C> = C extends { prototype: infer I }
     ? {
         [K in keyof I as K extends
@@ -76,7 +77,7 @@ export namespace JSX {
           | "onUnmount"
           | "onUpdate"
           ? never
-          : I[K] extends (...args: any[]) => any
+          : I[K] extends (...args: unknown[]) => unknown
             ? never
             : K]?: I[K];
       }
@@ -84,9 +85,9 @@ export namespace JSX {
 
   export type LibraryManagedAttributes<C, P> = P &
     (C extends string
-      ? {}
+      ? Record<never, never>
       : InstancePropsOf<C> extends never
-        ? {}
+        ? Record<never, never>
         : InstancePropsOf<C>) &
     GlobalAttributes;
 

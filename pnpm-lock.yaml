@@ -146,6 +146,10 @@ importers:
         version: 5.9.3
 
   packages/foundation/core:
+    dependencies:
+      '@verbose/shared':
+        specifier: workspace:*
+        version: link:../shared
     devDependencies:
       typescript:
         specifier: ^5.9.3
@@ -184,6 +188,12 @@ importers:
       '@verbose/jsx':
         specifier: workspace:*
         version: link:../jsx
+    devDependencies:
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/foundation/shared:
     devDependencies:
       typescript:
         specifier: ^5.9.3

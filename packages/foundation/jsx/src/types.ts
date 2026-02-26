@@ -18,11 +18,11 @@ export interface VNode {
   key?: string | number;
 }
 
-export type FunctionComponent<P = {}> = (
+export type FunctionComponent<P = Record<string, unknown>> = (
   props: P & { children?: Children[] },
 ) => VNode | null;
 
-export interface ComponentConstructor<P = {}> {
+export interface ComponentConstructor<P = Record<string, unknown>> {
   new (props: P): ComponentInstance;
   isComponent: true;
   isMemorized?: boolean;

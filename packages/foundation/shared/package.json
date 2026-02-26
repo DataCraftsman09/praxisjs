@@ -1,5 +1,5 @@
 {
-  "name": "@verbose/core",
+  "name": "@verbose/shared",
   "version": "0.1.0",
   "type": "module",
   "main": "./dist/index.js",
@@ -17,8 +17,5 @@
   "packageManager": "pnpm@10.30.2",
   "devDependencies": {
     "typescript": "^5.9.3"
-  },
-  "dependencies": {
-    "@verbose/shared": "workspace:*"
   }
 }

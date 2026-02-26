@@ -6,7 +6,6 @@ export {
   type ResourceOptions,
 } from "./async/resource";
 export { debounced, until, when, history } from "./reactive";
-export { isSignal } from "./utils/signal-utils";
 export {
   signal,
   persistedSignal,
@@ -14,7 +13,5 @@ export {
   computed,
   batch,
   effect,
-  type Computed,
-  type Signal,
   type PersistedSignalOptions,
 } from "./signal";

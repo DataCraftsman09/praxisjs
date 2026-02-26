@@ -1,10 +1,5 @@
-import type {
-  VNode,
-  Children,
-  ComponentInstance,
-  ComponentConstructor,
-} from "@verbose/jsx";
 import { effect } from "@verbose/core";
+import type { VNode, Children, ComponentInstance } from "@verbose/jsx";
 
 const EVENT_MAP: Record<string, string> = {
   onClick: "click",
@@ -41,14 +36,14 @@ interface MountedNode {
   el: Node;
   vnode?: VNode;
   instance?: ComponentInstance;
-  cleanups: (() => void)[];
+  cleanups: Array<() => void>;
   children: MountedNode[];
 }
 
 function applyProps(
   el: HTMLElement,
   props: Record<string, unknown>,
-  cleanups: (() => void)[],
+  cleanups: Array<() => void>,
 ) {
   for (const [key, value] of Object.entries(props)) {
     if (key === "key" || key === "children") continue;
@@ -57,7 +52,9 @@ function applyProps(
       const eventName = EVENT_MAP[key];
       const eventListener = value as EventListener;
       el.addEventListener(eventName, eventListener);
-      cleanups.push(() => el.removeEventListener(eventName, eventListener));
+      cleanups.push(() => {
+        el.removeEventListener(eventName, eventListener);
+      });
       continue;
     }
 
@@ -70,10 +67,11 @@ function applyProps(
       if (typeof value === "function") {
         cleanups.push(
           effect(() => {
-            el.className = String(value());
+            el.className = String((value as () => unknown)());
           }),
         );
       } else {
+        // eslint-disable-next-line @typescript-eslint/no-base-to-string
         el.className = String(value ?? "");
       }
       continue;
@@ -83,10 +81,11 @@ function applyProps(
       if (typeof value === "function") {
         cleanups.push(
           effect(() => {
-            const styleValue = value();
+            const styleValue = (value as () => unknown)();
             if (typeof styleValue === "object" && styleValue !== null) {
               Object.assign(el.style, styleValue);
             } else {
+              // eslint-disable-next-line @typescript-eslint/no-base-to-string
               el.setAttribute("style", String(styleValue ?? ""));
             }
           }),
@@ -94,6 +93,7 @@ function applyProps(
       } else if (typeof value === "object" && value !== null) {
         Object.assign(el.style, value);
       } else {
+        // eslint-disable-next-line @typescript-eslint/no-base-to-string
         el.setAttribute("style", String(value ?? ""));
       }
       continue;
@@ -103,11 +103,13 @@ function applyProps(
       if (typeof value === "function") {
         cleanups.push(
           effect(() => {
-            (el as any)[key] = value();
+            (el as unknown as Record<string, unknown>)[key] = (
+              value as () => unknown
+            )();
           }),
         );
       } else {
-        (el as any)[key] = value;
+        (el as unknown as Record<string, unknown>)[key] = value;
       }
       continue;
     }
@@ -116,7 +118,7 @@ function applyProps(
       const attrKey = key === "htmlFor" ? "for" : key;
       cleanups.push(
         effect(() => {
-          const attrValue = value();
+          const attrValue = (value as () => unknown)();
           if (
             attrValue === false ||
             attrValue === null ||
@@ -126,6 +128,7 @@ function applyProps(
           } else if (attrValue === true) {
             el.setAttribute(attrKey, "");
           } else {
+            // eslint-disable-next-line @typescript-eslint/no-base-to-string
             el.setAttribute(attrKey, String(attrValue));
           }
         }),
@@ -144,12 +147,16 @@ function applyProps(
 
     if (value !== null && value !== undefined) {
       const attrKey = key === "htmlFor" ? "for" : key;
+      // eslint-disable-next-line @typescript-eslint/no-base-to-string
       el.setAttribute(attrKey, String(value));
     }
   }
 }
 
-function renderChildren(children: Children, cleanups: (() => void)[]): Node[] {
+function renderChildren(
+  children: Children,
+  cleanups: Array<() => void>,
+): Node[] {
   if (children === null || children === undefined || children === false) {
     return [document.createComment("empty")];
   }
@@ -197,9 +204,9 @@ function renderChildren(children: Children, cleanups: (() => void)[]): Node[] {
     return [...currentNodes, anchor];
   }
 
-  if (typeof children === "object" && children !== null && "type" in children) {
+  if (typeof children === "object" && "type" in children) {
     const mounted = mountVNode(
-      children as VNode,
+      children,
       document.createComment("object"),
       cleanups,
     );
@@ -212,18 +219,13 @@ function renderChildren(children: Children, cleanups: (() => void)[]): Node[] {
 function mountVNode(
   vnode: VNode,
   _parent: Node,
-  parentCleanups: (() => void)[],
+  parentCleanups: Array<() => void>,
 ): MountedNode {
-  const cleanups: (() => void)[] = [];
+  const cleanups: Array<() => void> = [];
   const { type, props, children } = vnode;
 
-  // TODO: Use shared library for type checking
-  if (
-    typeof type === "function" &&
-    "isComponent" in type &&
-    (type as ComponentConstructor).isComponent
-  ) {
-    const instance = new (type as ComponentConstructor)({ ...props });
+  if (typeof type === "function" && "isComponent" in type) {
+    const instance = new type({ ...props });
 
     instance.onBeforeMount?.();
     let renderedVNode: VNode | null = null;
@@ -244,7 +246,7 @@ function mountVNode(
       wrapper.appendChild(childNode.el);
     }
 
-    const isMemoized = (type as ComponentConstructor).isMemorized;
+    const isMemoized = type.isMemorized;
 
     cleanups.push(
       effect(() => {
@@ -255,14 +257,14 @@ function mountVNode(
           for (const [key, value] of Object.entries(props)) {
             if (key === "children" || key === "key") continue;
             if (typeof value === "function") {
-              resolvedProps[key] = value();
+              resolvedProps[key] = (value as () => unknown)();
             } else {
               resolvedProps[key] = value;
             }
           }
 
           if (!instance._stateDirty) {
-            const arePropsEqual = (type as ComponentConstructor).arePropsEqual;
+            const arePropsEqual = type.arePropsEqual;
             const lastProps = instance._lastResolvedProps;
 
             if (
@@ -300,7 +302,9 @@ function mountVNode(
     parentCleanups.push(() => {
       instance.onUnmount?.();
       instance._mounted = false;
-      cleanups.forEach((fn) => fn());
+      cleanups.forEach((fn) => {
+        fn();
+      });
     });
 
     queueMicrotask(() => {
@@ -329,7 +333,9 @@ function mountVNode(
         `<${type.name || "AnonymousComponent"} />`,
       );
       parentCleanups.push(() => {
-        cleanups.forEach((fn) => fn());
+        cleanups.forEach((fn) => {
+          fn();
+        });
       });
       return {
         el: commentNode,
@@ -340,7 +346,9 @@ function mountVNode(
 
     const childNode = mountVNode(resolvedVNode, _parent, cleanups);
     parentCleanups.push(() => {
-      cleanups.forEach((fn) => fn());
+      cleanups.forEach((fn) => {
+        fn();
+      });
     });
     return {
       el: childNode.el,
@@ -350,7 +358,7 @@ function mountVNode(
     };
   }
 
-  const el = document.createElement(type as string);
+  const el = document.createElement(type);
   applyProps(el, props, cleanups);
 
   for (const child of children) {
@@ -359,7 +367,9 @@ function mountVNode(
   }
 
   parentCleanups.push(() => {
-    cleanups.forEach((fn) => fn());
+    cleanups.forEach((fn) => {
+      fn();
+    });
   });
 
   return {
@@ -371,13 +381,15 @@ function mountVNode(
 }
 
 export function render(vnode: VNode, container: HTMLElement) {
-  const cleanups: (() => void)[] = [];
+  const cleanups: Array<() => void> = [];
   container.innerHTML = "";
   const mounted = mountVNode(vnode, container, cleanups);
   container.appendChild(mounted.el);
 
   return () => {
-    cleanups.forEach((fn) => fn());
+    cleanups.forEach((fn) => {
+      fn();
+    });
     container.innerHTML = "";
   };
 }
