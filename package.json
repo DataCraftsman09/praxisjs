@@ -5,12 +5,25 @@
     "build": "pnpm -r run build",
     "dev": "pnpm -r --parallel run dev",
     "typecheck": "pnpm -r run typecheck",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "docs:dev": "pnpm --filter @verbose/docs docs:dev",
     "docs:build": "pnpm --filter @verbose/docs docs:build",
-    "docs:preview": "pnpm --filter @verbose/docs docs:preview"
+    "docs:preview": "pnpm --filter @verbose/docs docs:preview",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "packages/**/*.{ts,tsx}": "eslint --fix"
   },
   "packageManager": "pnpm@10.30.2",
   "devDependencies": {
-    "typescript": "^5.9.3"
+    "@types/node": "^25.3.0",
+    "eslint": "^10.0.2",
+    "eslint-plugin-import-x": "^4.16.1",
+    "eslint-plugin-unused-imports": "^4.4.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.56.1"
   }
 }
