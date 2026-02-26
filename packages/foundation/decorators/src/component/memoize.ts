@@ -17,7 +17,7 @@ function shallowEqual(a: PropsRecord, b: PropsRecord) {
   return true;
 }
 
-export function Momoize(
+export function Memoize(
   areEqual: (prev: PropsRecord, next: PropsRecord) => boolean = shallowEqual,
 ) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
