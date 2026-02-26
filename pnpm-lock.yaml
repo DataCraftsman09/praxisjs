@@ -18,40 +18,7 @@ importers:
         specifier: ^1.6.4
         version: 1.6.4(@algolia/client-search@5.49.1)(@types/node@25.3.0)(postcss@8.5.6)(search-insights@2.17.3)(typescript@5.9.3)
 
-  packages/composables:
-    dependencies:
-      '@verbose/core':
-        specifier: workspace:*
-        version: link:../core
-    devDependencies:
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
-  packages/concurrent:
-    dependencies:
-      '@verbose/core':
-        specifier: workspace:*
-        version: link:../core
-    devDependencies:
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
-  packages/core:
-    devDependencies:
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
-  packages/decorators:
-    dependencies:
-      '@verbose/core':
-        specifier: workspace:*
-        version: link:../core
-      '@verbose/jsx':
-        specifier: workspace:*
-        version: link:../jsx
+  packages/dx/mock:
     devDependencies:
       '@types/node':
         specifier: ^25.3.0
@@ -60,123 +27,23 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
-  packages/di:
+  packages/dx/testing:
     dependencies:
       '@verbose/core':
         specifier: workspace:*
-        version: link:../core
-      reflect-metadata:
-        specifier: ^0.2.2
-        version: 0.2.2
-    devDependencies:
-      '@types/node':
-        specifier: ^25.3.0
-        version: 25.3.0
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
-  packages/fsm:
-    dependencies:
-      '@verbose/core':
-        specifier: workspace:*
-        version: link:../core
-    devDependencies:
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
-  packages/i18n:
-    dependencies:
-      '@verbose/core':
-        specifier: workspace:*
-        version: link:../core
-    devDependencies:
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
-  packages/jsx:
-    devDependencies:
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
-  packages/mock:
-    devDependencies:
-      '@types/node':
-        specifier: ^25.3.0
-        version: 25.3.0
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
-  packages/motion:
-    dependencies:
-      '@verbose/core':
-        specifier: workspace:*
-        version: link:../core
-    devDependencies:
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
-  packages/router:
-    dependencies:
-      '@verbose/core':
-        specifier: workspace:*
-        version: link:../core
-      '@verbose/jsx':
-        specifier: workspace:*
-        version: link:../jsx
-    devDependencies:
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
-  packages/runtime:
-    dependencies:
-      '@verbose/core':
-        specifier: workspace:*
-        version: link:../core
+        version: link:../../foundation/core
       '@verbose/decorators':
         specifier: workspace:*
-        version: link:../decorators
+        version: link:../../foundation/decorators
       '@verbose/jsx':
         specifier: workspace:*
-        version: link:../jsx
+        version: link:../../foundation/jsx
     devDependencies:
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
 
-  packages/store:
-    dependencies:
-      '@verbose/core':
-        specifier: workspace:*
-        version: link:../core
-    devDependencies:
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
-  packages/testing:
-    dependencies:
-      '@verbose/core':
-        specifier: workspace:*
-        version: link:../core
-      '@verbose/decorators':
-        specifier: workspace:*
-        version: link:../decorators
-      '@verbose/jsx':
-        specifier: workspace:*
-        version: link:../jsx
-    devDependencies:
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
-  packages/vite-plugin:
+  packages/dx/vite-plugin:
     devDependencies:
       '@types/node':
         specifier: ^25.3.0
@@ -188,21 +55,154 @@ importers:
         specifier: ^7.3.1
         version: 7.3.1(@types/node@25.3.0)
 
+  packages/features/di:
+    dependencies:
+      '@verbose/core':
+        specifier: workspace:*
+        version: link:../../foundation/core
+      reflect-metadata:
+        specifier: ^0.2.2
+        version: 0.2.2
+    devDependencies:
+      '@types/node':
+        specifier: ^25.3.0
+        version: 25.3.0
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/features/fsm:
+    dependencies:
+      '@verbose/core':
+        specifier: workspace:*
+        version: link:../../foundation/core
+    devDependencies:
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/features/i18n:
+    dependencies:
+      '@verbose/core':
+        specifier: workspace:*
+        version: link:../../foundation/core
+    devDependencies:
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/features/motion:
+    dependencies:
+      '@verbose/core':
+        specifier: workspace:*
+        version: link:../../foundation/core
+    devDependencies:
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/features/router:
+    dependencies:
+      '@verbose/core':
+        specifier: workspace:*
+        version: link:../../foundation/core
+      '@verbose/jsx':
+        specifier: workspace:*
+        version: link:../../foundation/jsx
+    devDependencies:
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/features/store:
+    dependencies:
+      '@verbose/core':
+        specifier: workspace:*
+        version: link:../../foundation/core
+    devDependencies:
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/foundation/core:
+    devDependencies:
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/foundation/decorators:
+    dependencies:
+      '@verbose/core':
+        specifier: workspace:*
+        version: link:../core
+      '@verbose/jsx':
+        specifier: workspace:*
+        version: link:../jsx
+    devDependencies:
+      '@types/node':
+        specifier: ^25.3.0
+        version: 25.3.0
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/foundation/jsx:
+    devDependencies:
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/foundation/runtime:
+    dependencies:
+      '@verbose/core':
+        specifier: workspace:*
+        version: link:../core
+      '@verbose/decorators':
+        specifier: workspace:*
+        version: link:../decorators
+      '@verbose/jsx':
+        specifier: workspace:*
+        version: link:../jsx
+    devDependencies:
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/utils/composables:
+    dependencies:
+      '@verbose/core':
+        specifier: workspace:*
+        version: link:../../foundation/core
+    devDependencies:
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/utils/concurrent:
+    dependencies:
+      '@verbose/core':
+        specifier: workspace:*
+        version: link:../../foundation/core
+    devDependencies:
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
   playground:
     dependencies:
       '@verbose/core':
         specifier: workspace:*
-        version: link:../packages/core
+        version: link:../packages/foundation/core
       '@verbose/jsx':
         specifier: workspace:*
-        version: link:../packages/jsx
+        version: link:../packages/foundation/jsx
       '@verbose/runtime':
         specifier: workspace:*
-        version: link:../packages/runtime
+        version: link:../packages/foundation/runtime
     devDependencies:
       '@verbose/vite-plugin':
         specifier: workspace:*
-        version: link:../packages/vite-plugin
+        version: link:../packages/dx/vite-plugin
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
