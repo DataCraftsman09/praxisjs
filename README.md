@@ -4,7 +4,7 @@
 
 A signal-driven frontend framework written in TypeScript. Verbose combines fine-grained reactivity with class components and decorators, shipping a complete first-party ecosystem for building web applications.
 
-**[Documentation](https://your-docs-url.com)** · [GitHub](https://github.com/MateusGX/verbose)
+**[Documentation](https://verbose.mateusam.dev/)** · [GitHub](https://github.com/MateusGX/verbose)
 
 ## Packages
 
