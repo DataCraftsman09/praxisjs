@@ -8,7 +8,7 @@ export function computed<T>(computeFn: () => T): Computed<T> {
   const subscribers = new Set<Effect>();
 
   const recompute = () => {
-    dirty = false;
+    dirty = true;
     [...subscribers].forEach((sub) => {
       sub();
     });
