@@ -60,7 +60,7 @@ export function TimelineTab({ registry }: { registry: Registry }) {
             }`
           }
         >
-          {() => (paused() ? "▶ Resume" : "⏸ Pause")}
+          {() => (paused() ? "Resume" : "Pause")}
         </button>
 
         <button
