@@ -215,6 +215,7 @@ function renderChildren(
 
     const anchor = document.createComment("reactive");
     let currentNodes: Node[] = [];
+    let childCleanups: Array<() => void> = [];
     let initialized = false;
 
     cleanups.push(
@@ -222,10 +223,13 @@ function renderChildren(
         const result = fn();
 
         if (!initialized) {
-          currentNodes = renderChildren(result, cleanups);
+          currentNodes = renderChildren(result, childCleanups);
           initialized = true;
           return;
         }
+
+        childCleanups.forEach((c) => { c(); });
+        childCleanups = [];
 
         const parent = anchor.parentNode;
         if (!parent) return;
@@ -236,11 +240,15 @@ function renderChildren(
           }
         }
 
-        const newNodes = renderChildren(result, cleanups);
+        const newNodes = renderChildren(result, childCleanups);
         newNodes.forEach((node) => parent.insertBefore(node, anchor));
         currentNodes = newNodes;
       }),
     );
+
+    cleanups.push(() => {
+      childCleanups.forEach((c) => { c(); });
+    });
 
     return [...currentNodes, anchor];
   }
@@ -273,23 +281,9 @@ function mountVNode(
       initSlots(instance, children);
     }
     instance.onBeforeMount?.();
-    let renderedVNode: VNode | null = null;
-
-    try {
-      renderedVNode = instance.render();
-    } catch (e) {
-      console.error("Error rendering component:", e);
-      const error = e instanceof Error ? e : new Error(String(e));
-      instance.onError?.(error);
-    }
 
     const wrapper = document.createElement("div");
     wrapper.setAttribute("data-component", type.name || "AnonymousComponent");
-
-    if (renderedVNode) {
-      const childNode = mountVNode(renderedVNode, wrapper, cleanups);
-      wrapper.appendChild(childNode.el);
-    }
 
     const isMemoized = instance._isMemorized;
 

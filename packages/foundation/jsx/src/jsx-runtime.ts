@@ -1,6 +1,7 @@
 import {
-  flattenChildren,
   type Children,
+  flattenChildren,
+  type ChildrenInternal,
   type ComponentConstructor,
   type FunctionComponent,
   type VNode,
@@ -18,11 +19,11 @@ type Reactive<T> = T | (() => T);
 
 export function jsx<T extends VNode["type"]>(
   type: T,
-  props: PropsOf<T> & { children?: Children | Children[] },
+  props: PropsOf<T> & { children?: ChildrenInternal | ChildrenInternal[] },
   key?: string | number,
 ): VNode {
   const { children: raw, ...rest } = props;
-  const children: Children[] = [];
+  const children: ChildrenInternal[] = [];
 
   if (raw !== undefined) {
     if (Array.isArray(raw)) {
@@ -129,7 +130,7 @@ export namespace JSX {
     class?: Reactive<string>;
     className?: Reactive<string>;
     style?: Reactive<string | Partial<CSSStyleDeclaration>>;
-    children?: Children | Children[];
+    children?: Children;
     key?: string | number;
     ref?: (el: HTMLElement) => void;
     tabIndex?: Reactive<number>;

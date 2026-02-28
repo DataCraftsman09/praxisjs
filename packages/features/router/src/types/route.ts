@@ -8,7 +8,8 @@ export interface RouteLocation {
   hash: string;
 }
 
-export type RouteComponent = () => unknown;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type RouteComponent = new (...args: any[]) => any;
 
 export interface RouteDefinition {
   path: string;
