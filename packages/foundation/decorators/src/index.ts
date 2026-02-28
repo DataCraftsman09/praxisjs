@@ -1,10 +1,4 @@
-export {
-  Component,
-  type ComponentOptions,
-  Memoize,
-  Lazy,
-  Virtual,
-} from "./component";
+export { Component, Memoize, Lazy, Virtual } from "./component";
 export {
   Memo,
   Bind,
