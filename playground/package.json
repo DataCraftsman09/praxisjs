@@ -11,10 +11,13 @@
   "packageManager": "pnpm@10.30.2",
   "dependencies": {
     "@verbose/core": "workspace:*",
+    "@verbose/decorators": "workspace:*",
     "@verbose/jsx": "workspace:*",
-    "@verbose/runtime": "workspace:*"
+    "@verbose/runtime": "workspace:*",
+    "@verbose/shared": "workspace:*"
   },
   "devDependencies": {
+    "@verbose/devtools": "workspace:*",
     "@verbose/vite-plugin": "workspace:*",
     "typescript": "^5.9.3",
     "vite": "^7.3.1"
