@@ -9,14 +9,14 @@ Internal type definitions and utilities shared across all Verbose packages. You 
 A readable and writable reactive value.
 
 ```ts
-import type { Signal } from '@verbose/shared'
+import type { Signal } from "@verbose/shared";
 ```
 
-| Member | Signature | Description |
-|--------|-----------|-------------|
-| `()` | `() => T` | Read the current value |
-| `set` | `(value: T) => void` | Replace the value |
-| `update` | `(updater: (prev: T) => T) => void` | Derive next value from previous |
+| Member      | Signature                                    | Description                               |
+| ----------- | -------------------------------------------- | ----------------------------------------- |
+| `()`        | `() => T`                                    | Read the current value                    |
+| `set`       | `(value: T) => void`                         | Replace the value                         |
+| `update`    | `(updater: (prev: T) => T) => void`          | Derive next value from previous           |
 | `subscribe` | `(effect: (value: T) => void) => () => void` | Subscribe to changes, returns unsubscribe |
 
 ### `Computed<T>`
@@ -24,12 +24,12 @@ import type { Signal } from '@verbose/shared'
 A read-only reactive value derived from other signals.
 
 ```ts
-import type { Computed } from '@verbose/shared'
+import type { Computed } from "@verbose/shared";
 ```
 
-| Member | Signature | Description |
-|--------|-----------|-------------|
-| `()` | `() => T` | Read the current value |
+| Member      | Signature                                    | Description                               |
+| ----------- | -------------------------------------------- | ----------------------------------------- |
+| `()`        | `() => T`                                    | Read the current value                    |
 | `subscribe` | `(effect: (value: T) => void) => () => void` | Subscribe to changes, returns unsubscribe |
 
 ---
@@ -42,10 +42,10 @@ The internal representation of a rendered element, produced by the JSX transform
 
 ```ts
 interface VNode {
-  type: string | ComponentConstructor | FunctionComponent
-  props: Record<string, unknown>
-  children: Children[]
-  key?: string | number
+  type: string | Component;
+  props: Record<string, unknown>;
+  children: Children[];
+  key?: string | number;
 }
 ```
 
@@ -54,11 +54,17 @@ interface VNode {
 Any value that can appear as a child in a VNode tree.
 
 ```ts
-type Children = Primitive | VNode | ReactiveChildren | Children[]
+export type Children = ChildrenInternal | ChildrenInternal[];
 
-type Primitive = string | number | boolean | bigint | symbol | null | undefined
+type Primitive = string | number | boolean | bigint | symbol | null | undefined;
 
-type ReactiveChildren = () => Primitive | VNode | VNode[] | ReactiveChildren[]
+export type ChildrenInternal =
+  | Primitive
+  | VNode
+  | ReactiveChildren
+  | ChildrenInternal[];
+
+type ReactiveChildren = () => Primitive | VNode | VNode[] | ReactiveChildren[];
 ```
 
 ---
@@ -70,8 +76,9 @@ type ReactiveChildren = () => Primitive | VNode | VNode[] | ReactiveChildren[]
 Type for function-based components.
 
 ```ts
-type FunctionComponent<P = Record<string, unknown>> =
-  (props: P & { children?: Children[] }) => VNode | null
+type FunctionComponent<P = Record<string, unknown>> = (
+  props: P & { children?: Children },
+) => VNode | null;
 ```
 
 ### `ComponentConstructor<P>`
@@ -80,9 +87,36 @@ Type for class-based component constructors.
 
 ```ts
 interface ComponentConstructor<P = Record<string, unknown>> {
-  new (props: P): ComponentInstance
-  isComponent: true
+  new (props: P): ComponentInstance;
+  isComponent: true;
 }
+```
+
+### `Component`
+
+Union of the two component forms. Use this type when you need to accept or store either a function component or a class-based component constructor without caring which form it is.
+
+```ts
+type Component = FunctionComponent | ComponentConstructor;
+```
+
+| Variant                | Description                                      |
+| ---------------------- | ------------------------------------------------ |
+| `FunctionComponent`    | A plain function `(props) => VNode \| null`      |
+| `ComponentConstructor` | A class constructor whose instances expose `render()` |
+
+**When to use `Component` vs the narrower types**
+
+- Prefer `FunctionComponent<P>` or `ComponentConstructor<P>` when you know the form and need the generic parameter `P`.
+- Use `Component` in renderer internals, routing tables, or dynamic component registries where both forms must be handled uniformly.
+
+```ts
+import type { Component } from "@verbose/shared";
+
+const registry: Record<string, Component> = {
+  Button,   // FunctionComponent
+  Modal,    // ComponentConstructor
+};
 ```
 
 ### `ComponentInstance`
@@ -91,11 +125,11 @@ Interface that all component instances conform to internally.
 
 ```ts
 interface ComponentInstance {
-  render(): VNode | null
-  onBeforeMount?(): void
-  onMount?(): void
-  onUnmount?(): void
-  onError?(e: Error): void
+  render(): VNode | null;
+  onBeforeMount?(): void;
+  onMount?(): void;
+  onUnmount?(): void;
+  onError?(e: Error): void;
 }
 ```
 
@@ -108,10 +142,10 @@ interface ComponentInstance {
 Returns `true` if `source` is a writable `Signal` (has a `.set` method).
 
 ```ts
-import { isSignal } from '@verbose/shared'
+import { isSignal } from "@verbose/shared";
 
-isSignal(signal(0))    // true
-isSignal(computed(() => 0))  // false
+isSignal(signal(0)); // true
+isSignal(computed(() => 0)); // false
 ```
 
 ### `isComputed(source)`
@@ -119,11 +153,11 @@ isSignal(computed(() => 0))  // false
 Returns `true` if `source` is a `Computed` or `Signal` (callable with a `.subscribe` method).
 
 ```ts
-import { isComputed } from '@verbose/shared'
+import { isComputed } from "@verbose/shared";
 
-isComputed(computed(() => 0))  // true
-isComputed(signal(0))          // true
-isComputed(42)                 // false
+isComputed(computed(() => 0)); // true
+isComputed(signal(0)); // true
+isComputed(42); // false
 ```
 
 ### `flattenChildren(children)`

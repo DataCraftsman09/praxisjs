@@ -5,73 +5,87 @@ A Verbose component is a TypeScript class that extends `BaseComponent`. This gui
 ## Overview
 
 ```tsx
-import { Component, Prop, State, Watch, Emit, Slot, OnCommand } from '@verbose/decorators'
-import { Command, createCommand, BaseComponent } from '@verbose/decorators'
-import { resource } from '@verbose/core'
+import {
+  Component,
+  Prop,
+  State,
+  Watch,
+  Emit,
+  Slot,
+  OnCommand,
+  Command,
+  createCommand,
+} from "@verbose/decorators";
+import { BaseComponent, resource } from "@verbose/core";
 
-@Component({ tag: 'user-card' })
+@Component()
 class UserCard extends BaseComponent {
   // ── Props ──────────────────────────────────────────────────────────────
-  @Prop() userId!: number
-  @Prop() elevated = false
-  @Prop() onSave?: (user: User) => void
-  @Prop() refresh?: Command
+  @Prop() userId!: number;
+  @Prop() elevated = false;
+  @Prop() onSave?: (user: User) => void;
+  @Prop() refresh?: Command;
 
   // ── Local state ─────────────────────────────────────────────────────────
-  @State() editing = false
-  @State() name = ''
+  @State() editing = false;
+  @State() name = "";
 
   // ── Async data ──────────────────────────────────────────────────────────
   user = resource(async () => {
-    const res = await fetch(`/api/users/${this.props.userId}`)
-    return res.json() as Promise<User>
-  })
+    const res = await fetch(`/api/users/${this.userId}`);
+    return res.json() as Promise<User>;
+  });
 
   // ── Watchers ─────────────────────────────────────────────────────────────
-  @Watch('editing')
+  @Watch("editing")
   onEditingChange(next: boolean) {
-    if (next) this.name = this.user.data.value?.name ?? ''
+    if (next) this.name = this.user.data()?.name ?? "";
   }
 
   // ── Inbound commands ─────────────────────────────────────────────────────
-  @OnCommand('refresh')
+  @OnCommand("refresh")
   handleRefresh() {
-    this.user.refetch()
+    this.user.refetch();
   }
 
   // ── Emitted events ───────────────────────────────────────────────────────
-  @Emit('onSave')
+  @Emit("onSave")
   save() {
-    return { ...this.user.data.value, name: this.name }
+    return { ...this.user.data(), name: this.name };
   }
 
   // ── Slots ────────────────────────────────────────────────────────────────
-  @Slot('actions') actions!: Child[]
-  @Slot() default!: Child[]
+  @Slot("actions") actions!: Children;
+  @Slot() default!: Children;
 
   // ── Lifecycle ────────────────────────────────────────────────────────────
   onMount() {
-    console.log('UserCard mounted, userId:', this.props.userId)
+    console.log("UserCard mounted, userId:", this.userId);
   }
 
   onUnmount() {
-    console.log('UserCard unmounted')
+    console.log("UserCard unmounted");
   }
 
   // ── Render ───────────────────────────────────────────────────────────────
   render() {
-    const { data, pending, error } = this.user
+    const { data, pending, error } = this.user;
 
-    if (pending.value) return <div class="skeleton" />
-    if (error.value) return <div class="error">{error.value.message}</div>
+    if (pending()) return <div class="skeleton" />;
+    if (error()) return <div class="error">{(error() as Error).message}</div>;
 
     return (
-      <div class={`card ${this.props.elevated ? 'elevated' : ''}`}>
+      <div class={`card ${this.elevated ? "elevated" : ""}`}>
         <header>
           {this.editing ? (
-            <input value={this.name} onInput={e => { this.name = (e.target as HTMLInputElement).value }} />
+            <input
+              value={this.name}
+              onInput={(e) => {
+                this.name = (e.target as HTMLInputElement).value;
+              }}
+            />
           ) : (
-            <h2>{data.value?.name}</h2>
+            <h2>{data()?.name}</h2>
           )}
         </header>
 
@@ -81,12 +95,18 @@ class UserCard extends BaseComponent {
           {this.editing ? (
             <button onClick={() => this.save()}>Save</button>
           ) : (
-            <button onClick={() => { this.editing = true }}>Edit</button>
+            <button
+              onClick={() => {
+                this.editing = true;
+              }}
+            >
+              Edit
+            </button>
           )}
           {this.actions}
         </footer>
       </div>
-    )
+    );
   }
 }
 ```
@@ -100,11 +120,10 @@ class UserCard extends BaseComponent {
 Registers the class as a component and defines metadata.
 
 ```ts
-@Component({ tag: 'user-card' })
-class UserCard extends BaseComponent { }
+@Component()
+class UserCard extends BaseComponent {}
 ```
 
-- `tag` — custom element tag name (optional)
 - Every component class extends `BaseComponent`
 
 ---
@@ -120,11 +139,11 @@ Props are values received from the parent. The decorated property value is the *
 @Prop() refresh?: Command          // imperative command prop
 ```
 
-Always read props via `this.props.propName` inside `render()` to ensure reactivity:
+Props are read directly as `this.propName` — the `@Prop()` decorator creates a getter on the instance that reads the parent value with a fallback to the local default:
 
 ```tsx
 render() {
-  return <div class={this.props.elevated ? 'elevated' : ''} />
+  return <div class={this.elevated ? 'elevated' : ''} />
 }
 ```
 
@@ -142,15 +161,8 @@ Internal component state. Each `@State` property is a signal; any assignment sch
 Direct read and write:
 
 ```ts
-this.editing          // reads current value
-this.editing = true   // updates and schedules re-render
-```
-
-To access the underlying signal (e.g. to pass to composables):
-
-```ts
-import { getSignal } from '@verbose/decorators'
-const editingSignal = getSignal<boolean>(this, 'editing')
+this.editing; // reads current value
+this.editing = true; // updates and schedules re-render
 ```
 
 ---
@@ -161,25 +173,25 @@ Manages data fetching with reactive `pending`, `error`, and `data` state. Re-exe
 
 ```ts
 user = resource(async () => {
-  const res = await fetch(`/api/users/${this.props.userId}`)
-  return res.json()
-})
+  const res = await fetch(`/api/users/${this.userId}`);
+  return res.json();
+});
 ```
 
 In the template:
 
 ```tsx
-if (this.user.pending.value) return <Spinner />
-if (this.user.error.value) return <Error />
-return <h2>{this.user.data.value?.name}</h2>
+if (this.user.pending()) return <Spinner />;
+if (this.user.error()) return <Error />;
+return <h2>{this.user.data()?.name}</h2>;
 ```
 
 Manual actions:
 
 ```ts
-this.user.refetch()              // re-trigger the fetcher
-this.user.cancel()               // abort the in-flight request
-this.user.mutate({ name: 'x' }) // optimistic update
+this.user.refetch(); // re-trigger the fetcher
+this.user.cancel(); // abort the in-flight request
+this.user.mutate({ name: "x" }); // optimistic update
 ```
 
 ---
@@ -191,7 +203,7 @@ Runs a method whenever one or more `@State` / `@Prop` properties change.
 ```ts
 @Watch('editing')
 onEditingChange(next: boolean, prev: boolean) {
-  if (next) this.name = this.user.data.value?.name ?? ''
+  if (next) this.name = this.user.data()?.name ?? ''
 }
 ```
 
@@ -199,8 +211,8 @@ Multiple properties at once:
 
 ```ts
 @Watch('firstName', 'lastName')
-onNameChange([newFirst, newLast]: [string, string]) {
-  this.fullName = `${newFirst} ${newLast}`
+onNameChange(vals: { firstName: string; lastName: string }) {
+  this.fullName = `${vals.firstName} ${vals.lastName}`
 }
 ```
 
@@ -238,15 +250,15 @@ Binds the method and calls the named prop callback with the return value. Ensure
 
 @Emit('onSave')
 save() {
-  return { ...this.user.data.value, name: this.name }
-  // return value is passed to this.props.onSave(...)
+  return { ...this.user.data(), name: this.name }
+  // return value is passed to this.onSave(...)
 }
 ```
 
 In the parent:
 
 ```tsx
-<UserCard onSave={(user) => console.log('saved:', user)} />
+<UserCard onSave={(user) => console.log("saved:", user)} />
 ```
 
 ---
@@ -256,8 +268,8 @@ In the parent:
 Allows distributing content into the component. An unnamed slot receives direct children with no `slot` attribute.
 
 ```ts
-@Slot('actions') actions!: Child[]  // matched by <div slot="actions">
-@Slot() default!: Child[]           // children without slot=""
+@Slot('actions') actions!: Children  // matched by <div slot="actions">
+@Slot() default!: Children           // children without slot=""
 ```
 
 In the parent:
@@ -277,14 +289,15 @@ In the parent:
 
 Override lifecycle methods directly on the class.
 
-| Method | When it runs |
-|--------|--------------|
-| `onBeforeMount()` | Before first render |
-| `onMount()` | After first DOM insertion |
-| `onBeforeUpdate(prev)` | Before re-render triggered by prop change |
-| `onAfterUpdate(prev)` | After DOM update |
-| `onUnmount()` | When removed from DOM |
-| `onError(err)` | On uncaught error inside the component |
+| Method                 | When it runs                                   |
+| ---------------------- | ---------------------------------------------- |
+| `onBeforeMount()`      | Before first render                            |
+| `onMount()`            | After first DOM insertion                      |
+| `onBeforeUpdate(prev)` | Before props are applied (synchronous)         |
+| `onUpdate(prev)`       | After props are applied, before DOM commit     |
+| `onAfterUpdate(prev)`  | After DOM update (async, via `queueMicrotask`) |
+| `onUnmount()`          | When removed from DOM                          |
+| `onError(err)`         | On uncaught error inside the component         |
 
 ```ts
 onMount() {
@@ -309,7 +322,7 @@ render() {
 
   return (
     <div>
-      {pending.value ? <Spinner /> : <h2>{data.value?.name}</h2>}
+      {() => pending() ? <Spinner /> : <h2>{data()?.name}</h2>}
     </div>
   )
 }
@@ -351,28 +364,28 @@ Prefer reading `@State` and `@Prop` values directly inside `render()` rather tha
 ## Composing with external utilities
 
 ```tsx
-import { createRef, useElementSize } from '@verbose/composables'
-import { tween } from '@verbose/motion'
+import { createRef, useElementSize } from "@verbose/composables";
+import { tween } from "@verbose/motion";
 
 @Component()
 class AnimatedPanel extends BaseComponent {
-  ref = createRef<HTMLDivElement>()
-  size = useElementSize(this.ref)
-  opacity = tween(0, 1, { duration: 400 })
+  ref = createRef();
+  size = useElementSize(this.ref);
+  opacity = tween(0, 1, { duration: 400 });
 
   onMount() {
-    this.opacity.target.set(1)
+    this.opacity.target.set(1);
   }
 
   render() {
     return (
       <div
         ref={this.ref}
-        style={{ opacity: String(this.opacity.value.value) }}
+        style={() => ({ opacity: String(this.opacity.value()) })}
       >
-        <p>Width: {this.size.width.value}px</p>
+        <p>Width: {() => `${this.size.width()}px`}</p>
       </div>
-    )
+    );
   }
 }
 ```

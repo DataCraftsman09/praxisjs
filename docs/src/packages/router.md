@@ -56,27 +56,27 @@ const router = createRouter([
 Creates and registers the router singleton. Returns the `Router` instance directly.
 
 ```ts
-const router = createRouter(routes)
+const router = createRouter(routes);
 ```
 
 ## `Router`
 
 ### Properties
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `location` | `Signal<RouteLocation>` | Current route location |
-| `currentComponent` | `Signal<RouteComponent \| null>` | Active component |
-| `params` | `Computed<RouteParams>` | URL params (`/users/:id` → `{ id: '42' }`) |
-| `query` | `Computed<RouteQuery>` | Query string (`?page=2` → `{ page: '2' }`) |
+| Property           | Type                             | Description                                |
+| ------------------ | -------------------------------- | ------------------------------------------ |
+| `location`         | `Signal<RouteLocation>`          | Current route location                     |
+| `currentComponent` | `Signal<RouteComponent \| null>` | Active component                           |
+| `params`           | `Computed<RouteParams>`          | URL params (`/users/:id` → `{ id: '42' }`) |
+| `query`            | `Computed<RouteQuery>`           | Query string (`?page=2` → `{ page: '2' }`) |
 
 ### Methods
 
 ```ts
-router.push('/users/42')      // navigate, add to history
-router.replace('/login')      // navigate, replace current entry
-router.back()                 // go back
-router.forward()              // go forward
+router.push("/users/42"); // navigate, add to history
+router.replace("/login"); // navigate, replace current entry
+router.back(); // go back
+router.forward(); // go forward
 ```
 
 `push` returns `Promise<void>`. If `beforeEnter` returns `false` the navigation is aborted; if it returns a string the router redirects to that path instead.
@@ -85,18 +85,20 @@ router.forward()              // go forward
 
 ```ts
 type RouteLocation = {
-  path: string
-  params: RouteParams       // { id: '42' }
-  query: RouteQuery         // { page: '2' }
-  hash: string              // '#section'
-}
+  path: string;
+  params: RouteParams; // { id: '42' }
+  query: RouteQuery; // { page: '2' }
+  hash: string; // '#section'
+};
 
 type RouteDefinition = {
-  path: string
-  component: () => VNode
-  children?: RouteDefinition[]
-  beforeEnter?: (to: RouteLocation) => boolean | string | Promise<boolean | string>
-}
+  path: string;
+  component: () => VNode;
+  children?: RouteDefinition[];
+  beforeEnter?: (
+    to: RouteLocation,
+  ) => boolean | string | Promise<boolean | string>;
+};
 ```
 
 ## Composables
@@ -104,12 +106,12 @@ type RouteDefinition = {
 Use these inside components to access router state reactively.
 
 ```ts
-import { useRouter, useParams, useQuery, useLocation } from '@verbose/router'
+import { useRouter, useParams, useQuery, useLocation } from "@verbose/router";
 
-const router = useRouter()
-const params = useParams()    // Computed<RouteParams>
-const query = useQuery()      // Computed<RouteQuery>
-const location = useLocation() // Signal<RouteLocation>
+const router = useRouter();
+const params = useParams(); // Computed<RouteParams>
+const query = useQuery(); // Computed<RouteQuery>
+const location = useLocation(); // Signal<RouteLocation>
 ```
 
 ## Components
@@ -143,13 +145,13 @@ import { Link } from '@verbose/router'
 <Link to="/settings" replace>Settings</Link>
 ```
 
-| Prop | Type | Description |
-|------|------|-------------|
-| `to` | `string` | Target path |
-| `replace` | `boolean` | Use `replace` instead of `push` |
-| `class` | `string` | CSS class |
-| `activeClass` | `string` | Class added when route is active |
-| `children` | `Child[]` | Link content |
+| Prop          | Type       | Description                      |
+| ------------- | ---------- | -------------------------------- |
+| `to`          | `string`   | Target path                      |
+| `replace`     | `boolean`  | Use `replace` instead of `push`  |
+| `class`       | `string`   | CSS class                        |
+| `activeClass` | `string`   | Class added when route is active |
+| `children`    | `Children` | Link content                     |
 
 ## `@Route(path)` Decorator
 

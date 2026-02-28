@@ -27,7 +27,7 @@ Creates a reference object to be attached to a DOM element via the `ref` prop.
 ```tsx
 import { createRef } from '@verbose/composables'
 
-const inputRef = createRef<HTMLInputElement>()
+const inputRef = createRef()
 
 // In render:
 <input ref={inputRef} />
@@ -43,10 +43,10 @@ Tracks the rendered size of an element using `ResizeObserver`.
 ```ts
 import { createRef, useElementSize } from '@verbose/composables'
 
-const ref = createRef<HTMLDivElement>()
+const ref = createRef()
 const { width, height, stop } = useElementSize(ref)
 
-// width.value and height.value update on resize
+// width() and height() update on resize
 ```
 
 | Return | Type | Description |
@@ -63,7 +63,7 @@ Tracks the browser window dimensions.
 import { useWindowSize } from '@verbose/composables'
 
 const { width, height } = useWindowSize()
-// width.value, height.value update on resize
+// width(), height() update on resize
 ```
 
 ### `useScrollPosition(target?)`
@@ -109,7 +109,7 @@ Matches a CSS media query and returns a reactive boolean.
 import { useMediaQuery } from '@verbose/composables'
 
 const isTablet = useMediaQuery('(min-width: 768px)')
-// isTablet.value updates when the query result changes
+// isTablet() updates when the query result changes
 ```
 
 ### `useColorScheme()`
@@ -153,7 +153,7 @@ Detects user inactivity. Resets on mouse, keyboard, touch, or scroll events.
 import { useIdle } from '@verbose/composables'
 
 const idle = useIdle(30_000)  // 30 seconds, default is 60s
-// idle.value === true when user has been inactive
+// idle() === true when user has been inactive
 ```
 
 ---
@@ -170,8 +170,8 @@ import { useClipboard } from '@verbose/composables'
 const { copy, copied, content } = useClipboard(2000)
 
 await copy('Hello!')
-copied.value   // true for 2 seconds
-content.value  // 'Hello!'
+copied()   // true for 2 seconds
+content()  // 'Hello!'
 ```
 
 | Return | Type | Description |
@@ -207,10 +207,10 @@ import { useTimeAgo } from '@verbose/composables'
 
 const date = signal(new Date(Date.now() - 3600_000))
 const label = useTimeAgo(date)
-// label.value === '1 hora atrás'
+// label() === '1 hora atrás'
 
 const labelEn = useTimeAgo(date, 'en-US')
-// labelEn.value === '1 hour ago'
+// labelEn() === '1 hour ago'
 ```
 
 ### `usePagination(options)`
@@ -222,10 +222,10 @@ import { usePagination } from '@verbose/composables'
 
 const pager = usePagination({ total: 100, pageSize: 10, initial: 1 })
 
-pager.page.value       // 1
-pager.totalPages.value // 10
-pager.hasNext.value    // true
-pager.offset.value     // 0
+pager.page()       // 1
+pager.totalPages() // 10
+pager.hasNext()    // true
+pager.offset()     // 0
 
 pager.next()           // page → 2
 pager.goTo(5)          // page → 5

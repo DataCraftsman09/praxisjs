@@ -216,3 +216,15 @@ class Dashboard extends BaseComponent {
   }
 }
 ```
+
+Or with a functional component:
+
+```ts
+import { useService } from '@verbose/di'
+
+function Dashboard() {
+  const analytics = useService(AnalyticsService)
+
+  return <div onMount={() => analytics.track('view')} />
+}
+```

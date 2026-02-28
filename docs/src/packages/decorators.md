@@ -20,25 +20,24 @@ TypeScript decorators for defining components, reactive state, lifecycle hooks, 
 
 ## Component Decorator
 
-### `@Component(options?)`
+### `@Component()`
 
 Marks a class as a Verbose component.
 
 ```ts
-import { Component, BaseComponent } from '@verbose/decorators'
+import { Component, Slot } from '@verbose/decorators'
+import { BaseComponent } from '@verbose/core'
+import type { Children } from '@verbose/shared'
 
-@Component({ tag: 'my-button', shadow: false })
+@Component()
 class MyButton extends BaseComponent {
+  @Slot() default?: Children
+
   render() {
-    return <button>{this.props.children}</button>
+    return <button>{this.default}</button>
   }
 }
 ```
-
-| Option | Type | Description |
-|--------|------|-------------|
-| `tag` | `string` | Custom element tag name (optional) |
-| `shadow` | `boolean` | Use shadow DOM (optional) |
 
 ---
 
@@ -55,7 +54,7 @@ class Card extends BaseComponent {
   @Prop() elevated = false
 
   render() {
-    return <div class={this.props.elevated ? 'elevated' : ''}>{this.props.title}</div>
+    return <div class={this.elevated ? 'elevated' : ''}>{this.title}</div>
   }
 }
 ```
@@ -79,16 +78,6 @@ class Toggle extends BaseComponent {
 }
 ```
 
-### `getSignal<T>(instance, key)`
-
-Retrieves the underlying `Signal<T>` for a `@State` property, useful when passing it to composables.
-
-```ts
-import { getSignal } from '@verbose/decorators'
-
-const countSignal = getSignal<number>(this, 'count')
-```
-
 ---
 
 ## Watching State
@@ -98,15 +87,18 @@ const countSignal = getSignal<number>(this, 'count')
 Observes one or more `@State`, `@Prop`, or `@Computed` properties. The decorated method is called with the new and old values whenever they change.
 
 ```ts
-import { Watch, WatchVal } from '@verbose/decorators'
+import { Watch, WatchVal } from "@verbose/decorators";
 
 @Component()
 class Search extends BaseComponent {
-  @State() query = ''
+  @State() query = "";
 
-  @Watch('query')
-  onQueryChange(newVal: WatchVal<this, 'query'>, oldVal: WatchVal<this, 'query'>) {
-    console.log('query changed from', oldVal, 'to', newVal)
+  @Watch("query")
+  onQueryChange(
+    newVal: WatchVal<this, "query">,
+    oldVal: WatchVal<this, "query">,
+  ) {
+    console.log("query changed from", oldVal, "to", newVal);
   }
 }
 ```
@@ -118,7 +110,7 @@ import { WatchVals } from '@verbose/decorators'
 
 @Watch('firstName', 'lastName')
 onNameChange(vals: WatchVals<this, 'firstName' | 'lastName'>) {
-  // vals is [newFirstName, newLastName]
+  // vals is { firstName: newFirstName, lastName: newLastName }
 }
 ```
 
@@ -129,11 +121,11 @@ Calls the decorated method exactly once, the first time the named property becom
 ```ts
 @Component()
 class Loader extends BaseComponent {
-  @State() data: string[] | null = null
+  @State() data: string[] | null = null;
 
-  @When('data')
+  @When("data")
   onFirstData() {
-    console.log('data arrived:', this.data)
+    console.log("data arrived:", this.data);
   }
 }
 ```
@@ -146,10 +138,15 @@ Adds undo/redo to a `@State` property. Accessible as `{propName}History`. Defaul
 @Component()
 class Editor extends BaseComponent {
   @History(100)
-  @State() text = ''
+  @State()
+  text = "";
 
-  undo() { this.textHistory.undo() }
-  redo() { this.textHistory.redo() }
+  undo() {
+    this.textHistory.undo();
+  }
+  redo() {
+    this.textHistory.redo();
+  }
 }
 ```
 
@@ -164,7 +161,9 @@ Lifecycle hooks can be used as class methods (via inheritance) or as standalone 
 ### Functional hooks
 
 ```ts
-import { onMount, onUnmount, onBeforeMount, onAfterUpdate, onError } from '@verbose/decorators'
+import { onMount, onUnmount, onBeforeMount, onError } from '@verbose/core'
+import { Component } from '@verbose/decorators'
+import { BaseComponent } from '@verbose/core'
 
 @Component()
 class Timer extends BaseComponent {
@@ -178,14 +177,12 @@ class Timer extends BaseComponent {
 }
 ```
 
-| Hook | When it runs |
-|------|--------------|
-| `onBeforeMount(fn)` | Before first render |
-| `onMount(fn)` | After first DOM insertion |
-| `onBeforeUpdate(fn)` | Before props update re-render |
-| `onAfterUpdate(fn)` | After DOM update |
-| `onUnmount(fn)` | When component is removed from DOM |
-| `onError(fn)` | When an uncaught error occurs inside the component |
+| Hook                | When it runs                                       |
+| ------------------- | -------------------------------------------------- |
+| `onBeforeMount(fn)` | Before first render                                |
+| `onMount(fn)`       | After first DOM insertion                          |
+| `onUnmount(fn)`     | When component is removed from DOM                 |
+| `onError(fn)`       | When an uncaught error occurs inside the component |
 
 ### Class methods (via `BaseComponent`)
 
@@ -225,7 +222,7 @@ class Input extends BaseComponent {
   }
 
   render() {
-    return <input value={this.props.value} onInput={this.handleInput} />
+    return <input value={this.value} onInput={this.handleInput} />
   }
 }
 ```
@@ -259,12 +256,16 @@ closeModal.trigger()
 
 Declares a named slot. The getter returns the distributed children for that slot. Use without a name for the default slot.
 
+::: info
+`@Slot() default` captures all children that were not assigned to a named slot — equivalent to `children` in other frameworks.
+:::
+
 ```ts
 @Component()
 class Layout extends BaseComponent {
-  @Slot() default!: Child[]
-  @Slot('header') header!: Child[]
-  @Slot('footer') footer!: Child[]
+  @Slot() default!: Children
+  @Slot('header') header!: Children
+  @Slot('footer') footer!: Children
 
   render() {
     return (
@@ -283,11 +284,11 @@ class Layout extends BaseComponent {
 An imperative event bus for triggering component actions from the outside.
 
 ```ts
-import { createCommand } from '@verbose/decorators'
+import { createCommand } from "@verbose/decorators";
 
-const reset = createCommand()
-reset.trigger()
-reset.subscribe(() => console.log('reset!'))
+const reset = createCommand();
+reset.trigger();
+reset.subscribe(() => console.log("reset!"));
 ```
 
 ---
@@ -301,7 +302,8 @@ Class-level decorator that skips re-renders when the component's resolved props 
 The optional `areEqual(prev, next)` function receives the previous and next resolved prop values and must return `true` when the component should **not** re-render. Defaults to a shallow (`Object.is`) equality check over all props.
 
 ```ts
-import { Memoize, Component, Prop, BaseComponent } from '@verbose/decorators'
+import { Memoize, Component, Prop } from '@verbose/decorators'
+import { BaseComponent } from '@verbose/core'
 
 @Memoize()
 @Component()
@@ -310,7 +312,7 @@ class Avatar extends BaseComponent {
   @Prop() size = 48
 
   render() {
-    return <img src={this.props.url} width={this.props.size} />
+    return <img src={this.url} width={this.size} />
   }
 }
 ```
@@ -339,7 +341,8 @@ class Chart extends BaseComponent {
 With `deepEqual`, passing a new array reference with the same contents does **not** trigger a re-render.
 
 **How it works:**
-- The decorator sets `isMemoized = true` and stores `arePropsEqual` on the constructor.
+
+- The decorator sets `_isMemorized = true` and stores `_arePropsEqual` on the constructor.
 - The renderer resolves any function-valued props (signals passed as props) on each re-render cycle, then compares the resolved values against the previous render's snapshot.
 - A `_stateDirty` flag on the instance ensures that `@State` writes always bypass the memoize check.
 
@@ -431,13 +434,13 @@ fetchData(id: number) {
 }
 ```
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `level` | `'log' \| 'debug' \| 'warn'` | `'log'` | Console method |
-| `args` | `boolean` | `true` | Log arguments |
-| `result` | `boolean` | `true` | Log return value |
-| `time` | `boolean` | `false` | Log execution time |
-| `devOnly` | `boolean` | `true` | Skip in production |
+| Option    | Type                         | Default | Description        |
+| --------- | ---------------------------- | ------- | ------------------ |
+| `level`   | `'log' \| 'debug' \| 'warn'` | `'log'` | Console method     |
+| `args`    | `boolean`                    | `true`  | Log arguments      |
+| `result`  | `boolean`                    | `true`  | Log return value   |
+| `time`    | `boolean`                    | `false` | Log execution time |
+| `devOnly` | `boolean`                    | `true`  | Skip in production |
 
 ### `@Once()`
 
@@ -462,29 +465,8 @@ async saveData(data: object) {
 }
 ```
 
-| Option | Type | Description |
-|--------|------|-------------|
-| `delay` | `number` | Wait (ms) before first retry |
-| `backoff` | `boolean` | Double delay on each retry |
-| `onRetry` | `(attempt, error) => void` | Called before each retry |
-
----
-
-## BaseComponent
-
-Abstract base class that all components extend. Provides the props system and lifecycle method stubs.
-
-```ts
-abstract class BaseComponent {
-  readonly props: Record<string, any>
-
-  abstract render(): VNode | null
-
-  onBeforeMount?(): void
-  onMount?(): void
-  onBeforeUpdate?(prevProps: Record<string, any>): void
-  onAfterUpdate?(prevProps: Record<string, any>): void
-  onUnmount?(): void
-  onError?(error: Error): void
-}
-```
+| Option    | Type                       | Description                  |
+| --------- | -------------------------- | ---------------------------- |
+| `delay`   | `number`                   | Wait (ms) before first retry |
+| `backoff` | `boolean`                  | Double delay on each retry   |
+| `onRetry` | `(attempt, error) => void` | Called before each retry     |

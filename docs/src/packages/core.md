@@ -29,7 +29,7 @@ import { signal } from '@verbose/core'
 
 const count = signal(0)
 
-count.value          // 0
+count()              // 0
 count.set(1)         // set directly
 count.update(n => n + 1)  // update from previous value
 count.subscribe(v => console.log(v))  // listen for changes
@@ -43,11 +43,11 @@ Creates a derived value that recalculates lazily whenever its signal dependencie
 import { signal, computed } from '@verbose/core'
 
 const count = signal(2)
-const doubled = computed(() => count.value * 2)
+const doubled = computed(() => count() * 2)
 
-doubled.value  // 4
+doubled()  // 4
 count.set(5)
-doubled.value  // 10
+doubled()  // 10
 ```
 
 ### `effect(fn)`
@@ -60,7 +60,7 @@ import { signal, effect } from '@verbose/core'
 const name = signal('Alice')
 
 const stop = effect(() => {
-  console.log('Hello,', name.value)
+  console.log('Hello,', name())
   return () => console.log('cleanup')
 })
 
@@ -185,7 +185,7 @@ import { signal, debounced } from '@verbose/core'
 const input = signal('')
 const debouncedInput = debounced(input, 300)
 
-// debouncedInput.value updates 300ms after input stops changing
+// debouncedInput() updates 300ms after input stops changing
 ```
 
 ### `history(source, limit?)`
@@ -201,12 +201,12 @@ const h = history(text)
 text.set('world')
 text.set('!')
 
-h.canUndo.value  // true
+h.canUndo()  // true
 h.undo()
-text.value       // 'world'
+text()       // 'world'
 h.redo()
-text.value       // '!'
-h.values.value   // ['hello', 'world', '!']
+text()       // '!'
+h.values()   // ['hello', 'world', '!']
 h.clear()
 ```
 
@@ -236,13 +236,13 @@ import { signal, resource } from '@verbose/core'
 const userId = signal(1)
 
 const user = resource(async () => {
-  const res = await fetch(`/api/users/${userId.value}`)
+  const res = await fetch(`/api/users/${userId()}`)
   return res.json()
 })
 
-user.pending.value  // true while fetching
-user.data.value     // resolved data
-user.error.value    // Error if rejected
+user.pending()  // true while fetching
+user.data()     // resolved data
+user.error()    // Error if rejected
 
 user.refetch()      // manually re-trigger
 user.cancel()       // cancel in-flight request
@@ -355,6 +355,28 @@ function Risky() {
     console.error('render failed:', err)
   })
   return <div />
+}
+```
+
+---
+
+## BaseComponent
+
+Abstract base class that all class components extend. Provides the props system and lifecycle method stubs.
+
+```ts
+import { BaseComponent } from '@verbose/core'
+
+abstract class BaseComponent {
+  abstract render(): VNode | null
+
+  onBeforeMount?(): void
+  onMount?(): void
+  onBeforeUpdate?(prevProps: Record<string, any>): void
+  onUpdate?(prevProps: Record<string, any>): void
+  onAfterUpdate?(prevProps: Record<string, any>): void
+  onUnmount?(): void
+  onError?(error: Error): void
 }
 ```
 

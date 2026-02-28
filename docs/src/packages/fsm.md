@@ -64,10 +64,10 @@ const machine = createMachine<State, Event>({
 ### Reading state
 
 ```ts
-machine.state.value          // 'idle' (Computed)
-machine.history.value        // [{ from, event, to, timestamp }, ...]
-machine.is('loading')        // true/false
-machine.can('FETCH')         // true if 'FETCH' is valid in current state
+machine.state()          // 'idle' (Computed)
+machine.history()        // [{ from, event, to }]
+machine.is('loading')    // true/false
+machine.can('FETCH')     // true if 'FETCH' is valid in current state
 ```
 
 ### Sending events
@@ -127,7 +127,7 @@ class FetchButton extends BaseComponent {
         disabled={this.machine.is('loading')}
         onClick={() => this.fetch()}
       >
-        {this.machine.state.value === 'loading' ? 'Loading…' : 'Fetch'}
+        {() => this.machine.state() === 'loading' ? 'Loading…' : 'Fetch'}
       </button>
     )
   }

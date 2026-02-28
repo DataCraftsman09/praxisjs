@@ -116,7 +116,8 @@ Lazily injects the singleton store instance into a component property.
 
 ```ts
 import { UseStore } from '@verbose/store'
-import { Component, BaseComponent } from '@verbose/decorators'
+import { Component } from '@verbose/decorators'
+import { BaseComponent } from '@verbose/core'
 
 @Component()
 class Header extends BaseComponent {

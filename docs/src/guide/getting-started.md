@@ -29,12 +29,12 @@ Configure Vite to use the Verbose plugin:
 
 ```ts
 // vite.config.ts
-import { defineConfig } from 'vite'
-import { verbose } from '@verbose/vite-plugin'
+import { defineConfig } from "vite";
+import { verbose } from "@verbose/vite-plugin";
 
 export default defineConfig({
   plugins: [verbose({ hmr: true })],
-})
+});
 ```
 
 Configure TypeScript to use the Verbose JSX runtime:
@@ -53,16 +53,16 @@ Configure TypeScript to use the Verbose JSX runtime:
 ## Your First Component
 
 ```tsx
-import { Component, State, Prop } from '@verbose/decorators'
-import { BaseComponent } from '@verbose/decorators'
+import { Component, State, Prop } from "@verbose/decorators";
+import { BaseComponent } from "@verbose/core";
 
-@Component({ tag: 'my-counter' })
+@Component()
 class Counter extends BaseComponent {
-  @Prop() initialCount = 0
-  @State() count = this.props.initialCount
+  @Prop() initialCount = 0;
+  @State() count = 0;
 
   increment() {
-    this.count++
+    this.count++;
   }
 
   render() {
@@ -71,7 +71,7 @@ class Counter extends BaseComponent {
         <p>Count: {this.count}</p>
         <button onClick={() => this.increment()}>Increment</button>
       </div>
-    )
+    );
   }
 }
 ```
@@ -80,24 +80,24 @@ class Counter extends BaseComponent {
 
 ```ts
 import { render } from '@verbose/runtime'
-import { jsx } from '@verbose/jsx'
 
 render(<Counter initialCount={0} />, document.getElementById('app')!)
 ```
 
 ## Package Overview
 
-| Package | Purpose |
-|---------|---------|
-| [core](/packages/core) | Reactive primitives: `signal`, `computed`, `effect`, `resource` |
-| [composables](/packages/composables) | DOM and browser composition utilities |
-| [decorators](/packages/decorators) | Class decorators for components |
-| [jsx](/packages/jsx) | JSX runtime and type definitions |
-| [runtime](/packages/runtime) | VNode rendering engine |
-| [store](/packages/store) | Reactive state management |
-| [router](/packages/router) | Client-side routing |
-| [motion](/packages/motion) | Animations: tweens, springs, keyframes |
-| [fsm](/packages/fsm) | Finite state machines |
-| [concurrent](/packages/concurrent) | Async concurrency control |
-| [di](/packages/di) | Dependency injection container |
-| [vite-plugin](/packages/vite-plugin) | Vite integration |
+| Package                              | Purpose                                                         |
+| ------------------------------------ | --------------------------------------------------------------- |
+| [core](/packages/core)               | Reactive primitives: `signal`, `computed`, `effect`, `resource` |
+| [composables](/packages/composables) | DOM and browser composition utilities                           |
+| [decorators](/packages/decorators)   | Class decorators for components                                 |
+| [jsx](/packages/jsx)                 | JSX runtime and type definitions                                |
+| [runtime](/packages/runtime)         | VNode rendering engine                                          |
+| [store](/packages/store)             | Reactive state management                                       |
+| [router](/packages/router)           | Client-side routing                                             |
+| [motion](/packages/motion)           | Animations: tweens, springs, keyframes                          |
+| [fsm](/packages/fsm)                 | Finite state machines                                           |
+| [concurrent](/packages/concurrent)   | Async concurrency control                                       |
+| [di](/packages/di)                   | Dependency injection container                                  |
+| [vite-plugin](/packages/vite-plugin) | Vite integration                                                |
+| [devtools](/packages/devtools)       | In-app developer tools panel                                    |

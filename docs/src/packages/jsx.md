@@ -43,9 +43,9 @@ These are used by the TypeScript/Babel JSX transform and generally not called di
 Creates a virtual node. Called for single-child elements.
 
 ```ts
-import { jsx } from '@verbose/jsx'
+import { jsx } from "@verbose/jsx";
 
-jsx('div', { class: 'box', children: 'Hello' })
+jsx("div", { class: "box", children: "Hello" });
 ```
 
 ### `jsxs(type, props, key?)`
@@ -71,40 +71,7 @@ jsx(Fragment, { children: [...] })
 
 ---
 
-## VNode
-
-Every JSX expression produces a `VNode`:
-
-```ts
-type VNode = {
-  type: string | ComponentConstructor | FunctionComponent | typeof Fragment
-  props: Record<string, any>
-  children: Child[]
-  key?: string
-}
-
-type Child = VNode | string | number | boolean | null | undefined
-```
-
----
-
-## Component Types
-
-### `ComponentConstructor<P>`
-
-Type for class components:
-
-```ts
-type ComponentConstructor<P = {}> = new (props: P) => ComponentInstance
-```
-
-### `FunctionComponent<P>`
-
-Type for function components:
-
-```ts
-type FunctionComponent<P = {}> = (props: P) => VNode | null
-```
+> **VNode, Children, FunctionComponent, ComponentConstructor** — these types are defined in [@verbose/shared](./shared) and re-used by the JSX runtime.
 
 ---
 
@@ -120,44 +87,44 @@ Full type coverage for HTML elements. All support:
 
 **Universal attributes:**
 
-| Attribute | Type |
-|-----------|------|
-| `id` | `string` |
-| `class` / `className` | `string` |
-| `style` | `string \| Record<string, string>` |
-| `key` | `string \| number` |
-| `ref` | `{ current: T \| null }` |
-| `tabIndex` | `number` |
-| `title` | `string` |
-| `hidden` | `boolean` |
-| `draggable` | `boolean` |
+| Attribute             | Type                               |
+| --------------------- | ---------------------------------- |
+| `id`                  | `string`                           |
+| `class` / `className` | `string`                           |
+| `style`               | `string \| Record<string, string>` |
+| `key`                 | `string \| number`                 |
+| `ref`                 | `{ current: T \| null }`           |
+| `tabIndex`            | `number`                           |
+| `title`               | `string`                           |
+| `hidden`              | `boolean`                          |
+| `draggable`           | `boolean`                          |
 
 **Accessibility:**
 
-| Attribute | Type |
-|-----------|------|
-| `role` | `string` |
-| `aria-label` | `string` |
-| `aria-hidden` | `boolean` |
+| Attribute       | Type      |
+| --------------- | --------- |
+| `role`          | `string`  |
+| `aria-label`    | `string`  |
+| `aria-hidden`   | `boolean` |
 | `aria-expanded` | `boolean` |
-| `aria-checked` | `boolean` |
+| `aria-checked`  | `boolean` |
 
 **Event handlers:**
 
-| Handler | Event |
-|---------|-------|
-| `onClick` | `MouseEvent` |
-| `onInput` | `InputEvent` |
-| `onChange` | `Event` |
-| `onSubmit` | `SubmitEvent` |
-| `onKeyDown` | `KeyboardEvent` |
-| `onKeyUp` | `KeyboardEvent` |
-| `onFocus` | `FocusEvent` |
-| `onBlur` | `FocusEvent` |
-| `onMouseDown` | `MouseEvent` |
-| `onMouseUp` | `MouseEvent` |
-| `onMouseMove` | `MouseEvent` |
-| `onScroll` | `Event` |
+| Handler       | Event           |
+| ------------- | --------------- |
+| `onClick`     | `MouseEvent`    |
+| `onInput`     | `InputEvent`    |
+| `onChange`    | `Event`         |
+| `onSubmit`    | `SubmitEvent`   |
+| `onKeyDown`   | `KeyboardEvent` |
+| `onKeyUp`     | `KeyboardEvent` |
+| `onFocus`     | `FocusEvent`    |
+| `onBlur`      | `FocusEvent`    |
+| `onMouseDown` | `MouseEvent`    |
+| `onMouseUp`   | `MouseEvent`    |
+| `onMouseMove` | `MouseEvent`    |
+| `onScroll`    | `Event`         |
 
 **Supported HTML elements:**
 
@@ -171,25 +138,26 @@ Full type coverage for HTML elements. All support:
 // Class component
 @Component()
 class Card extends BaseComponent {
-  @Prop() title = ''
+  @Prop() title = "";
+  @Slot() default?: Children;
 
   render() {
     return (
       <div class="card">
-        <h2>{this.props.title}</h2>
-        {this.props.children}
+        <h2>{this.title}</h2>
+        {this.default}
       </div>
-    )
+    );
   }
 }
 
 // Function component
-function Badge({ label, color = 'blue' }: { label: string; color?: string }) {
-  return <span class={`badge badge-${color}`}>{label}</span>
+function Badge({ label, color = "blue" }: { label: string; color?: string }) {
+  return <span class={`badge badge-${color}`}>{label}</span>;
 }
 
 // Usage
 <Card title="Hello">
   <Badge label="New" color="green" />
-</Card>
+</Card>;
 ```

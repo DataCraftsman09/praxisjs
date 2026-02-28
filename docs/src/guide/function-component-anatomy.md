@@ -5,28 +5,32 @@ A function component is a plain TypeScript function that receives props and retu
 ## Overview
 
 ```tsx
-import { signal, computed, resource } from '@verbose/core'
-import { useRouter } from '@verbose/router'
-import type { Children } from '@verbose/shared'
+import { signal, computed, resource } from "@verbose/core";
+import { useRouter } from "@verbose/router";
+import type { Children } from "@verbose/shared";
 
 // ── External state ────────────────────────────────────────────────────────────
-const query = signal('')
-const debouncedQuery = debounced(query, 300)
+const query = signal("");
+const debouncedQuery = debounced(query, 300);
 
 // ── Props interface ───────────────────────────────────────────────────────────
 interface SearchBarProps {
-  placeholder?: string
-  onSearch?: (q: string) => void
-  children?: Children[]
+  placeholder?: string;
+  onSearch?: (q: string) => void;
+  children?: Children;
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
-function SearchBar({ placeholder = 'Search…', onSearch, children }: SearchBarProps) {
+function SearchBar({
+  placeholder = "Search…",
+  onSearch,
+  children,
+}: SearchBarProps) {
   const results = resource(async () => {
-    if (!debouncedQuery()) return []
-    const res = await fetch(`/api/search?q=${debouncedQuery()}`)
-    return res.json()
-  })
+    if (!debouncedQuery()) return [];
+    const res = await fetch(`/api/search?q=${debouncedQuery()}`);
+    return res.json();
+  });
 
   return (
     <div class="search-bar">
@@ -34,22 +38,22 @@ function SearchBar({ placeholder = 'Search…', onSearch, children }: SearchBarP
         placeholder={placeholder}
         value={query}
         onInput={(e) => {
-          query.set((e.target as HTMLInputElement).value)
-          onSearch?.(query())
+          query.set((e.target as HTMLInputElement).value);
+          onSearch?.(query());
         }}
       />
 
       {() => results.pending() && <span class="spinner" />}
 
       <ul>
-        {() => results.data()?.map(item => (
-          <li key={item.id}>{item.title}</li>
-        ))}
+        {() =>
+          results.data()?.map((item) => <li key={item.id}>{item.title}</li>)
+        }
       </ul>
 
       {children}
     </div>
-  )
+  );
 }
 ```
 
@@ -63,20 +67,20 @@ Props are received as the first argument and are just a plain object. Destructur
 
 ```tsx
 interface CardProps {
-  title: string
-  elevated?: boolean
-  onClose?: () => void
-  children?: Children[]
+  title: string;
+  elevated?: boolean;
+  onClose?: () => void;
+  children?: Children;
 }
 
 function Card({ title, elevated = false, onClose, children }: CardProps) {
   return (
-    <div class={`card ${elevated ? 'elevated' : ''}`}>
+    <div class={`card ${elevated ? "elevated" : ""}`}>
       <h2>{title}</h2>
       {children}
       {onClose && <button onClick={onClose}>✕</button>}
     </div>
-  )
+  );
 }
 ```
 
@@ -86,21 +90,21 @@ There is no `this.props` — everything comes directly from the parameter. Props
 
 ### 2. Children
 
-Children arrive as `props.children` (a `Children[]`). Render them anywhere in the output.
+Children arrive as `props.children` (a `Children`). Render them anywhere in the output.
 
 ```tsx
 interface PanelProps {
-  children?: Children[]
+  children?: Children;
 }
 
 function Panel({ children }: PanelProps) {
-  return <section class="panel">{children}</section>
+  return <section class="panel">{children}</section>;
 }
 
 // Usage:
 <Panel>
   <p>This is rendered inside the panel.</p>
-</Panel>
+</Panel>;
 ```
 
 ---
@@ -110,7 +114,7 @@ function Panel({ children }: PanelProps) {
 The function is called **once**. To make part of the output reactive, wrap it in an arrow function — the renderer tracks signal reads inside it and re-evaluates the subtree automatically.
 
 ```tsx
-const count = signal(0)
+const count = signal(0);
 
 function Counter() {
   return (
@@ -121,24 +125,24 @@ function Counter() {
       {/* Reactive — updates whenever count changes */}
       {() => <p>{count()}</p>}
     </div>
-  )
+  );
 }
 ```
 
 Signal values can also be passed directly as reactive prop values:
 
 ```tsx
-const isDark = signal(false)
+const isDark = signal(false);
 
 function ThemeButton() {
   return (
     <button
-      class={() => isDark() ? 'btn-dark' : 'btn-light'}
-      onClick={() => isDark.update(v => !v)}
+      class={() => (isDark() ? "btn-dark" : "btn-light")}
+      onClick={() => isDark.update((v) => !v)}
     >
       Toggle
     </button>
-  )
+  );
 }
 ```
 
@@ -149,18 +153,18 @@ function ThemeButton() {
 Because the renderer calls the function **exactly once**, any `signal()` created inside the body is instantiated once per usage and lives for as long as the component is in the DOM. Reactive children `() =>` capture the signal via closure, so every update is reflected automatically.
 
 ```tsx
-import { signal } from '@verbose/core'
+import { signal } from "@verbose/core";
 
 function Counter() {
-  const count = signal(0)
+  const count = signal(0);
 
   return (
     <div>
       {() => <p>Count: {count()}</p>}
-      <button onClick={() => count.update(n => n + 1)}>+</button>
-      <button onClick={() => count.update(n => n - 1)}>-</button>
+      <button onClick={() => count.update((n) => n + 1)}>+</button>
+      <button onClick={() => count.update((n) => n - 1)}>-</button>
     </div>
-  )
+  );
 }
 ```
 
@@ -176,19 +180,25 @@ Each usage of `<Counter />` gets its own independent signal — there is no shar
 
 ```tsx
 function TemperatureConverter() {
-  const celsius = signal(0)
-  const fahrenheit = computed(() => celsius() * 9 / 5 + 32)
+  const celsius = signal(0);
+  const fahrenheit = computed(() => (celsius() * 9) / 5 + 32);
 
   return (
     <div>
       <input
         type="number"
         value={celsius}
-        onInput={e => celsius.set(Number((e.target as HTMLInputElement).value))}
+        onInput={(e) =>
+          celsius.set(Number((e.target as HTMLInputElement).value))
+        }
       />
-      {() => <p>{celsius()}°C = {fahrenheit()}°F</p>}
+      {() => (
+        <p>
+          {celsius()}°C = {fahrenheit()}°F
+        </p>
+      )}
     </div>
-  )
+  );
 }
 ```
 
@@ -200,17 +210,17 @@ Function components have no instance state. Reactive state lives in signals defi
 
 ```tsx
 // module-level signal
-const open = signal(false)
+const open = signal(false);
 
-function Dropdown({ children }: { children?: Children[] }) {
+function Dropdown({ children }: { children?: Children }) {
   return (
     <div>
-      <button onClick={() => open.update(v => !v)}>
-        {() => open() ? 'Close' : 'Open'}
+      <button onClick={() => open.update((v) => !v)}>
+        {() => (open() ? "Close" : "Open")}
       </button>
       {() => open() && <div class="menu">{children}</div>}
     </div>
-  )
+  );
 }
 ```
 
@@ -218,17 +228,17 @@ For state that should not be shared between usages, create the signal in the **c
 
 ```tsx
 function App() {
-  const open = signal(false)
-  return <Dropdown open={open} />
+  const open = signal(false);
+  return <Dropdown open={open} />;
 }
 
 function Dropdown({ open }: { open: Signal<boolean> }) {
   return (
     <div>
-      <button onClick={() => open.update(v => !v)}>Menu</button>
+      <button onClick={() => open.update((v) => !v)}>Menu</button>
       {() => open() && <ul>{/* items */}</ul>}
     </div>
-  )
+  );
 }
 ```
 
@@ -239,19 +249,19 @@ function Dropdown({ open }: { open: Signal<boolean> }) {
 `resource` can be used inside a function component. Define it outside if it should be shared, or inline if it's local to the rendered output.
 
 ```tsx
-const userId = signal(1)
+const userId = signal(1);
 
 function UserCard() {
   const user = resource(async () => {
-    const res = await fetch(`/api/users/${userId()}`)
-    return res.json()
-  })
+    const res = await fetch(`/api/users/${userId()}`);
+    return res.json();
+  });
 
   return () => {
-    if (user.pending()) return <div class="skeleton" />
-    if (user.error()) return <div class="error">Failed to load</div>
-    return <h2>{user.data()?.name}</h2>
-  }
+    if (user.pending()) return <div class="skeleton" />;
+    if (user.error()) return <div class="error">Failed to load</div>;
+    return <h2>{user.data()?.name}</h2>;
+  };
 }
 ```
 
@@ -264,18 +274,18 @@ function UserCard() {
 Function components support a subset of lifecycle hooks: `onBeforeMount`, `onMount`, `onUnmount`, and `onError`. Call them at the top level of the function body — the renderer collects them during the single invocation and wires them up automatically.
 
 ```tsx
-import { onMount, onUnmount, onError } from '@verbose/core'
-import { signal } from '@verbose/core'
+import { onMount, onUnmount, onError } from "@verbose/core";
+import { signal } from "@verbose/core";
 
 function Clock() {
-  const time = signal(new Date())
+  const time = signal(new Date());
 
   onMount(() => {
-    const id = setInterval(() => time.set(new Date()), 1000)
-    onUnmount(() => clearInterval(id))
-  })
+    const id = setInterval(() => time.set(new Date()), 1000);
+    onUnmount(() => clearInterval(id));
+  });
 
-  return () => <p>{time().toLocaleTimeString()}</p>
+  return () => <p>{time().toLocaleTimeString()}</p>;
 }
 ```
 
@@ -284,24 +294,24 @@ function Clock() {
 ```tsx
 function Logger() {
   onBeforeMount(() => {
-    console.log('about to mount')
-  })
+    console.log("about to mount");
+  });
 
   onError((err) => {
-    console.error('render error:', err)
-  })
+    console.error("render error:", err);
+  });
 
-  return <div />
+  return <div />;
 }
 ```
 
-| Hook | Available | Notes |
-|---|---|---|
-| `onBeforeMount` | ✅ | Runs before DOM insertion |
-| `onMount` | ✅ | Runs after DOM insertion |
-| `onUnmount` | ✅ | Runs on removal |
-| `onError` | ✅ | Catches errors thrown during the function call |
-| `onBeforeUpdate` / `onAfterUpdate` | ❌ | Function components are called once — there is no re-render to intercept |
+| Hook                               | Available | Notes                                                                    |
+| ---------------------------------- | --------- | ------------------------------------------------------------------------ |
+| `onBeforeMount`                    | ✅        | Runs before DOM insertion                                                |
+| `onMount`                          | ✅        | Runs after DOM insertion                                                 |
+| `onUnmount`                        | ✅        | Runs on removal                                                          |
+| `onError`                          | ✅        | Catches errors thrown during the function call                           |
+| `onBeforeUpdate` / `onAfterUpdate` | ❌        | Function components are called once — there is no re-render to intercept |
 
 ---
 
@@ -310,13 +320,13 @@ function Logger() {
 Composables from `@verbose/composables` return signals/computed values that work as reactive props or reactive children.
 
 ```tsx
-import { createRef, useElementSize } from '@verbose/composables'
-import { spring } from '@verbose/motion'
+import { createRef, useElementSize } from "@verbose/composables";
+import { spring } from "@verbose/motion";
 
 function AnimatedBox() {
-  const ref = createRef<HTMLDivElement>()
-  const { width } = useElementSize(ref)
-  const scale = spring(1)
+  const ref = createRef<HTMLDivElement>();
+  const { width } = useElementSize(ref);
+  const scale = spring(1);
 
   return (
     <div
@@ -327,7 +337,7 @@ function AnimatedBox() {
     >
       {() => `Width: ${width()}px`}
     </div>
-  )
+  );
 }
 ```
 
@@ -365,15 +375,15 @@ function AnimatedBox() {
 
 ## Class vs Function components
 
-| | Class component | Function component |
-|---|---|---|
-| Local state | `@State()` decorator | `signal()` inside the function |
-| Shared state | Module-level signal / store | Module-level signal / store |
-| Props | `@Prop()` + `this.props` | Destructured parameter |
-| Lifecycle | `onMount`, `onUnmount`, etc. | `onMount`, `onUnmount`, `onBeforeMount`, `onError` |
-| Slots | `@Slot()` decorator | `props.children` |
-| Reactivity | Automatic re-render | Reactive children `() =>` |
-| Commands | `@OnCommand()` | Not available |
-| Re-renders | On signal or prop change | Never (called once) |
+|              | Class component              | Function component                                 |
+| ------------ | ---------------------------- | -------------------------------------------------- |
+| Local state  | `@State()` decorator         | `signal()` inside the function                     |
+| Shared state | Module-level signal / store  | Module-level signal / store                        |
+| Props        | `@Prop()` + `this.props`     | Destructured parameter                             |
+| Lifecycle    | `onMount`, `onUnmount`, etc. | `onMount`, `onUnmount`, `onBeforeMount`, `onError` |
+| Slots        | `@Slot()` decorator          | `props.children`                                   |
+| Reactivity   | Automatic re-render          | Reactive children `() =>`                          |
+| Commands     | `@OnCommand()`               | Not available                                      |
+| Re-renders   | On signal or prop change     | Never (called once)                                |
 
 Use **function components** for presentational pieces with contained local state. Use **class components** when you need named slots, `@Watch`, `@Emit`, commands, or update-phase lifecycle hooks.

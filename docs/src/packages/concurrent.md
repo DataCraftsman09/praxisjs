@@ -33,17 +33,17 @@ const saveUser = task(async (user: User) => {
 // Call it like a normal function
 saveUser({ name: 'Alice' })
 
-saveUser.loading.value    // true while any call is pending
-saveUser.error.value      // last Error, if any
-saveUser.lastResult.value // last resolved value
-saveUser.cancelAll()      // abort all in-flight calls
+saveUser.loading()    // true while any call is pending
+saveUser.error()      // last Error, if any
+saveUser.lastResult() // last resolved value
+saveUser.cancelAll()  // abort all in-flight calls
 ```
 
 | Property | Type | Description |
 |----------|------|-------------|
 | `loading` | `Computed<boolean>` | Any call in progress |
 | `error` | `Computed<Error \| null>` | Last error |
-| `lastResult` | `Computed<T \| undefined>` | Last resolved value |
+| `lastResult` | `Computed<T \| null>` | Last resolved value |
 | `cancelAll()` | `() => void` | Cancel all pending calls |
 
 ---
@@ -62,10 +62,10 @@ const processItem = queue(async (item: Item) => {
 processItem(item1)
 processItem(item2)  // waits for item1 to finish
 
-processItem.loading.value  // true while queue is running
-processItem.pending.value  // number of items waiting
-processItem.error.value    // last error
-processItem.clear()        // discard all queued items
+processItem.loading()  // true while queue is running
+processItem.pending()  // number of items waiting
+processItem.error()    // last error
+processItem.clear()    // discard all queued items
 ```
 
 | Property | Type | Description |
@@ -91,10 +91,10 @@ const uploadFile = pool(3, async (file: File) => {
 // At most 3 uploads run simultaneously
 files.forEach(f => uploadFile(f))
 
-uploadFile.loading.value  // true while any is running
-uploadFile.active.value   // number currently executing
-uploadFile.pending.value  // number waiting for a slot
-uploadFile.error.value    // last error
+uploadFile.loading()  // true while any is running
+uploadFile.active()   // number currently executing
+uploadFile.pending()  // number waiting for a slot
+uploadFile.error()    // last error
 ```
 
 | Property | Type | Description |
