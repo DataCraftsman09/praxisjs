@@ -1,4 +1,4 @@
-import type { ComponentConstructor, ComponentInstance } from "@verbose/shared";
+import type { ComponentConstructor, ComponentInstance } from "@praxisjs/shared";
 
 export function Component() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

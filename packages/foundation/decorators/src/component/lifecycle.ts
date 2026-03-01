@@ -1,4 +1,4 @@
-import { type BaseComponent, VALID_LIFECYCLE_HOOK_SIGNATURES } from "@verbose/core";
+import { type BaseComponent, VALID_LIFECYCLE_HOOK_SIGNATURES } from "@praxisjs/core";
 
 function getAllMethods(proto: object): string[] {
   const methods: string[] = [];

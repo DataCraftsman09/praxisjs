@@ -1,4 +1,4 @@
-import type { Computed } from "@verbose/shared";
+import type { Computed } from "@praxisjs/shared";
 
 import { track, activeEffect, runEffect, type Effect } from "./effect";
 

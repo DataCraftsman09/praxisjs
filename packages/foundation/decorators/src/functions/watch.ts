@@ -1,5 +1,5 @@
-import { type BaseComponent, effect } from "@verbose/core";
-import { type Computed, isComputed } from "@verbose/shared";
+import { type BaseComponent, effect } from "@praxisjs/core";
+import { type Computed, isComputed } from "@praxisjs/shared";
 
 type BaseComponentKeys = keyof BaseComponent;
 

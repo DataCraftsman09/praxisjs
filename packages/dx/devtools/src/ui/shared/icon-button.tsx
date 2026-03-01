@@ -1,4 +1,4 @@
-import type { Component } from "@verbose/shared";
+import type { Component } from "@praxisjs/shared";
 
 export function IconButton({
   title,

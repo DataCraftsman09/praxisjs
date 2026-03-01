@@ -1,5 +1,5 @@
 {
-  "name": "@verbose/devtools",
+  "name": "@praxisjs/devtools",
   "version": "0.1.0",
   "type": "module",
   "main": "./dist/index.js",
@@ -18,10 +18,10 @@
   },
   "dependencies": {
     "@unocss/reset": "^66.6.2",
-    "@verbose/core": "workspace:*",
-    "@verbose/jsx": "workspace:*",
-    "@verbose/runtime": "workspace:*",
-    "@verbose/shared": "workspace:*"
+    "@praxisjs/core": "workspace:*",
+    "@praxisjs/jsx": "workspace:*",
+    "@praxisjs/runtime": "workspace:*",
+    "@praxisjs/shared": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^25.3.0",

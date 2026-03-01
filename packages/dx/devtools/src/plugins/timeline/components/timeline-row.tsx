@@ -1,6 +1,6 @@
 import { time } from "@utils/format-time";
 
-import { signal } from "@verbose/core";
+import { signal } from "@praxisjs/core";
 
 import { Badge } from "./badge";
 

@@ -6,8 +6,8 @@ import { SignalsPlugin } from "@plugins/signals";
 import { TimelinePlugin } from "@plugins/timeline";
 import unoReset from "@unocss/reset/tailwind-v4.css?inline";
 
-import { signal } from "@verbose/core";
-import { render } from "@verbose/runtime";
+import { signal } from "@praxisjs/core";
+import { render } from "@praxisjs/runtime";
 
 import { Panel } from "./panel";
 
@@ -52,7 +52,7 @@ function DevToolsApp({
           >
             <img class="h-[13px] w-[13px]" src={logo} />
             <span class="text-[10px] font-bold text-accent tracking-widest uppercase">
-              verbose
+              devtools
             </span>
           </button>
         )
@@ -76,7 +76,7 @@ export const DevTools = {
     this.plugins.forEach((p) => p.setup?.(Registry.instance));
 
     const host = document.createElement("div");
-    host.id = "verbose-devtools";
+    host.id = "praxisjs-devtools";
     document.body.appendChild(host);
     this.host = host;
 

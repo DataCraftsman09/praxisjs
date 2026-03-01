@@ -1,4 +1,4 @@
-import type { BaseComponent } from "@verbose/core";
+import type { BaseComponent } from "@praxisjs/core";
 
 export function readProp(instance: BaseComponent, propName: string): unknown {
   const fromParent = instance._rawProps[propName];

@@ -1,5 +1,5 @@
 {
-  "name": "@verbose/jsx",
+  "name": "@praxisjs/jsx",
   "version": "0.1.0",
   "type": "module",
   "main": "./dist/index.js",
@@ -27,6 +27,6 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
-    "@verbose/shared": "workspace:*"
+    "@praxisjs/shared": "workspace:*"
   }
 }

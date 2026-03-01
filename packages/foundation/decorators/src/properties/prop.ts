@@ -1,4 +1,4 @@
-import type { BaseComponent } from "@verbose/core";
+import type { BaseComponent } from "@praxisjs/core";
 
 export function Prop() {
   return function (target: object, propertyKey: string) {

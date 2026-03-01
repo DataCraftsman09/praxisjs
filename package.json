@@ -1,5 +1,5 @@
 {
-  "name": "verbose",
+  "name": "praxisjs",
   "private": true,
   "scripts": {
     "build": "pnpm -r run build",
@@ -7,20 +7,22 @@
     "typecheck": "pnpm -r run typecheck",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "docs:dev": "pnpm --filter @verbose/docs docs:dev",
-    "docs:build": "pnpm --filter @verbose/docs docs:build",
-    "docs:preview": "pnpm --filter @verbose/docs docs:preview",
+    "docs:dev": "pnpm --filter @praxisjs/docs docs:dev",
+    "docs:build": "pnpm --filter @praxisjs/docs docs:build",
+    "docs:preview": "pnpm --filter @praxisjs/docs docs:preview",
     "prepare": "husky",
     "build:foundation": "pnpm --filter './packages/foundation/**' build",
     "build:features": "pnpm --filter './packages/features/**' build",
     "build:dx": "pnpm --filter './packages/dx/**' build",
-    "build:utils": "pnpm --filter './packages/utils/**' build"
+    "build:utils": "pnpm --filter './packages/utils/**' build",
+    "changeset": "changeset"
   },
   "lint-staged": {
     "packages/**/*.{ts,tsx}": "eslint --fix"
   },
   "packageManager": "pnpm@10.30.2",
   "devDependencies": {
+    "@changesets/cli": "^2.29.8",
     "@types/node": "^25.3.0",
     "eslint": "^10.0.2",
     "eslint-plugin-import-x": "^4.16.1",

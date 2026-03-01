@@ -131,7 +131,7 @@ export function Debug(options: DebugOptions = {}) {
 
         if (!isComputed(value)) {
           console.warn(
-            `[Verbose DevTools] @Debug() on "${componentName}.${key}": ` +
+            `[PraxisJS DevTools] @Debug() on "${componentName}.${key}": ` +
               `expected a computed() value but got ${typeof value}. Skipping.`,
           );
           return;

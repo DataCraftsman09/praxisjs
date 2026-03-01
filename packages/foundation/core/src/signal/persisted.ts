@@ -1,4 +1,4 @@
-import type { Signal } from "@verbose/shared";
+import type { Signal } from "@praxisjs/shared";
 
 import { signal } from "./signal";
 

@@ -1,5 +1,5 @@
-import { persistedSignal, type PersistedSignalOptions } from "@verbose/core";
-import type { Signal } from "@verbose/shared";
+import { persistedSignal, type PersistedSignalOptions } from "@praxisjs/core";
+import type { Signal } from "@praxisjs/shared";
 
 const signalMap = new WeakMap<object, Map<string, Signal<unknown>>>();
 const initMap = new WeakMap<object, Set<string>>();

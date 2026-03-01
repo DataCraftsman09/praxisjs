@@ -1,4 +1,4 @@
-import type { Children } from "@verbose/shared";
+import type { Children } from "@praxisjs/shared";
 
 export function SidePanel({
   children,

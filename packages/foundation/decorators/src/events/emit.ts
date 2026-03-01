@@ -1,4 +1,4 @@
-import type { BaseComponent } from "@verbose/core";
+import type { BaseComponent } from "@praxisjs/core";
 
 import { readProp } from "./helper";
 

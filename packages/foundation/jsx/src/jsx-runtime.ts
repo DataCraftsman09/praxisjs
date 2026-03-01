@@ -5,7 +5,7 @@ import {
   type ComponentConstructor,
   type FunctionComponent,
   type VNode,
-} from "@verbose/shared";
+} from "@praxisjs/shared";
 
 type PropsOf<T> = T extends string
   ? JSX.IntrinsicElements[T]

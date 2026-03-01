@@ -1,4 +1,4 @@
-import { signal, computed, effect } from "@verbose/core";
+import { signal, computed, effect } from "@praxisjs/core";
 
 export interface SpringOptions {
   stiffness?: number;

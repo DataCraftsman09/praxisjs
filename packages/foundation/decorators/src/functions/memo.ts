@@ -1,5 +1,5 @@
-import { computed } from "@verbose/core";
-import type { Computed } from "@verbose/shared";
+import { computed } from "@praxisjs/core";
+import type { Computed } from "@praxisjs/shared";
 
 const instanceCache = new WeakMap<
   object,

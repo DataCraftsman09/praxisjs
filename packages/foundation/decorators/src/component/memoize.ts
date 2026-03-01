@@ -1,4 +1,4 @@
-import type { ComponentInstance } from "@verbose/shared";
+import type { ComponentInstance } from "@praxisjs/shared";
 
 type PropsRecord = Record<string, unknown>;
 

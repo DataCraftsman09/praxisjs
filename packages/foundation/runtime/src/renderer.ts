@@ -2,13 +2,13 @@ import {
   effect,
   createFunctionalContext,
   setFunctionalContext,
-} from "@verbose/core";
-import { initSlots } from "@verbose/decorators";
+} from "@praxisjs/core";
+import { initSlots } from "@praxisjs/decorators";
 import type {
   VNode,
   ChildrenInternal,
   ComponentInstance,
-} from "@verbose/shared";
+} from "@praxisjs/shared";
 
 const EVENT_MAP: Record<string, string> = {
   onClick: "click",

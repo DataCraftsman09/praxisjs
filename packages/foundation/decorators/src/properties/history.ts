@@ -1,4 +1,4 @@
-import { type HistoryElement, history } from "@verbose/core";
+import { type HistoryElement, history } from "@praxisjs/core";
 
 export function History(limit = 50) {
   return function (target: object, propertyKey: string): void {

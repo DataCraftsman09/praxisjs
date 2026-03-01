@@ -1,10 +1,10 @@
-import type { BaseComponent } from "@verbose/core";
+import type { BaseComponent } from "@praxisjs/core";
 import {
   type Children,
   type ChildrenInternal,
   flattenChildren,
   type VNode,
-} from "@verbose/shared";
+} from "@praxisjs/shared";
 
 const slotsMap = new WeakMap<object, Map<string, ChildrenInternal[]>>();
 

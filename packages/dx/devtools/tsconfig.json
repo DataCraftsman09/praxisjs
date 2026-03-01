@@ -3,7 +3,7 @@
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./",
-    "jsxImportSource": "@verbose/jsx",
+    "jsxImportSource": "@praxisjs/jsx",
     "module": "ESNext",
     "moduleResolution": "bundler",
     "paths": {

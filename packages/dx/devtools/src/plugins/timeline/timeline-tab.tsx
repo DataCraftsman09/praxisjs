@@ -1,6 +1,6 @@
 import { EmptyState } from "@shared/empty-state";
 
-import { signal, onMount, onUnmount } from "@verbose/core";
+import { signal, onMount, onUnmount } from "@praxisjs/core";
 
 import { TimelineRow } from "./components/timeline-row";
 import { FILTERS, type Filter } from "./constants";

@@ -1,5 +1,5 @@
 {
-  "name": "@verbose/vite-plugin",
+  "name": "@praxisjs/vite-plugin",
   "version": "0.1.0",
   "type": "module",
   "main": "./dist/index.js",

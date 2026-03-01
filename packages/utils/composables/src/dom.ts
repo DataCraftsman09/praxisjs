@@ -1,5 +1,5 @@
-import { signal, computed, effect } from "@verbose/core";
-import type { Computed } from "@verbose/shared";
+import { signal, computed, effect } from "@praxisjs/core";
+import type { Computed } from "@praxisjs/shared";
 
 export function createRef(): { current: HTMLElement | null } {
   return { current: null };

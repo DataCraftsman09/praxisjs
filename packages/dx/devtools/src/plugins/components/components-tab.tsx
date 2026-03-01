@@ -1,6 +1,6 @@
 import { EmptyState } from "@shared/empty-state";
 
-import { signal, effect, peek, onMount, onUnmount } from "@verbose/core";
+import { signal, effect, peek, onMount, onUnmount } from "@praxisjs/core";
 
 import { ComponentDetail } from "./components/component-detail";
 import { ComponentRow } from "./components/component-row";

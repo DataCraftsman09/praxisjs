@@ -1,5 +1,5 @@
-import { type BaseComponent, when } from "@verbose/core";
-import { isComputed } from "@verbose/shared";
+import { type BaseComponent, when } from "@praxisjs/core";
+import { isComputed } from "@praxisjs/shared";
 
 export function When(propName: string) {
   return function (

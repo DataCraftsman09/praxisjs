@@ -83,11 +83,11 @@ export default defineConfig({
     ],
 
     socialLinks: [
-      { icon: "github", link: "https://github.com/MateusGX/verbose" },
+      { icon: "github", link: "https://github.com/praxisjs-org/praxisjs" },
     ],
     footer: {
       message:
-        'Released under the <a href="https://github.com/MateusGX/verbose/blob/main/LICENSE">MIT License</a>.',
+        'Released under the <a href="https://github.com/praxisjs-org/praxisjs/blob/main/LICENSE">MIT License</a>.',
       copyright:
         'Copyright © 2025-present <a href="https://github.com/MateusGX">Mateus Martins</a>  — PraxisJS is experimental software, use at your own risk.',
     },

@@ -1,4 +1,4 @@
-import { signal, effect } from "@verbose/core";
+import { signal, effect } from "@praxisjs/core";
 
 export function createStore<T extends Record<string, unknown>>(
   definition: T & ThisType<T>,

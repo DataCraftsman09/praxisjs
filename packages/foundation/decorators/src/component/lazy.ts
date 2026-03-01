@@ -1,5 +1,5 @@
-import { type BaseComponent, signal } from "@verbose/core";
-import type { VNode } from "@verbose/shared";
+import { type BaseComponent, signal } from "@praxisjs/core";
+import type { VNode } from "@praxisjs/shared";
 
 export function Lazy(placeholder = 200) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -1,0 +1,49 @@
+{
+  "name": "create-praxisjs",
+  "version": "0.1.0",
+  "description": "Scaffold a new PraxisJS framework project",
+  "type": "module",
+  "bin": {
+    "create-praxisjs": "./dist/index.mjs"
+  },
+  "files": [
+    "dist",
+    "templates"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@clack/prompts": "^1.0.1",
+    "picocolors": "^1.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@praxisjs/composables": "workspace:*",
+    "@praxisjs/concurrent": "workspace:*",
+    "@praxisjs/core": "workspace:*",
+    "@praxisjs/decorators": "workspace:*",
+    "@praxisjs/devtools": "workspace:*",
+    "@praxisjs/di": "workspace:*",
+    "@praxisjs/jsx": "workspace:*",
+    "@praxisjs/router": "workspace:*",
+    "@praxisjs/runtime": "workspace:*",
+    "@praxisjs/store": "workspace:*",
+    "tsdown": "0.20.3",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "praxisjs",
+    "create-praxisjs",
+    "scaffold",
+    "frontend",
+    "framework"
+  ],
+  "packageManager": "pnpm@10.30.2"
+}

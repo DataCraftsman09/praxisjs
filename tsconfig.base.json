@@ -8,7 +8,7 @@
     "emitDecoratorMetadata": true,
     "useDefineForClassFields": false,
     "jsx": "react-jsx",
-    "jsxImportSource": "@verbose/jsx",
+    "jsxImportSource": "@praxisjs/jsx",
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true

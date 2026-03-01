@@ -1,5 +1,5 @@
-import { signal } from "@verbose/core";
-import type { ComponentInstance, Signal } from "@verbose/shared";
+import { signal } from "@praxisjs/core";
+import type { ComponentInstance, Signal } from "@praxisjs/shared";
 
 export function State() {
   return function (target: object, propertyKey: string) {

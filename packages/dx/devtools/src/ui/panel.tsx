@@ -9,8 +9,8 @@ import {
 } from "@icons";
 import { IconButton } from "@shared/icon-button";
 
-import { signal } from "@verbose/core";
-import type { Component } from "@verbose/shared";
+import { signal } from "@praxisjs/core";
+import type { Component } from "@praxisjs/shared";
 
 import type { Registry } from "@core/registry";
 import type { DevtoolsPlugin } from "@plugins/types";
@@ -146,7 +146,7 @@ export function Panel({ plugins, registry, onClose }: PanelProps) {
             <div class="flex items-center gap-[6px] pr-3 mr-[2px] border-r border-border shrink-0">
               <img class="h-[13px] w-[13px]" src={logo} />
               <span class="text-[10px] font-bold text-accent tracking-widest uppercase">
-                verbose
+                praxisjs
               </span>
             </div>
 

@@ -1,7 +1,7 @@
 import { EmptyState } from "@shared/empty-state";
 import { SearchInput } from "@shared/search-input";
 
-import { signal, onMount, onUnmount } from "@verbose/core";
+import { signal, onMount, onUnmount } from "@praxisjs/core";
 
 import { SignalDetail } from "./components/signal-detail";
 import { SignalRow } from "./components/signal-row";

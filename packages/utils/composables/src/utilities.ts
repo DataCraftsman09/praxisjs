@@ -1,5 +1,5 @@
-import { signal, computed } from "@verbose/core";
-import type { Signal, Computed } from "@verbose/shared";
+import { signal, computed } from "@praxisjs/core";
+import type { Signal, Computed } from "@praxisjs/shared";
 
 export function useClipboard(resetDelay = 2000) {
   const copied = signal(false);

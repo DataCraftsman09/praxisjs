@@ -4,10 +4,10 @@
     "types": ["vite/client"],
     "baseUrl": ".",
     "paths": {
-      "@verbose/core": ["../../packages/core/src/index.ts"],
-      "@verbose/jsx": ["../../packages/jsx/src/index.ts"],
-      "@verbose/jsx/jsx-runtime": ["../../packages/jsx/src/jsx-runtime.ts"],
-      "@verbose/runtime": ["../../packages/runtime/src/index.ts"]
+      "@praxisjs/core": ["../../packages/core/src/index.ts"],
+      "@praxisjs/jsx": ["../../packages/jsx/src/index.ts"],
+      "@praxisjs/jsx/jsx-runtime": ["../../packages/jsx/src/jsx-runtime.ts"],
+      "@praxisjs/runtime": ["../../packages/runtime/src/index.ts"]
     }
   },
   "include": ["src", "vite.config.ts"]

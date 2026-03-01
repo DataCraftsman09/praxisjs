@@ -1,5 +1,5 @@
 {
-  "name": "@verbose/runtime",
+  "name": "@praxisjs/runtime",
   "version": "0.1.0",
   "type": "module",
   "main": "./dist/index.js",
@@ -19,9 +19,9 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
-    "@verbose/core": "workspace:*",
-    "@verbose/decorators": "workspace:*",
-    "@verbose/jsx": "workspace:*",
-    "@verbose/shared": "workspace:*"
+    "@praxisjs/core": "workspace:*",
+    "@praxisjs/decorators": "workspace:*",
+    "@praxisjs/jsx": "workspace:*",
+    "@praxisjs/shared": "workspace:*"
   }
 }

@@ -13,4 +13,4 @@ PraxisJS is a personal exploration into what a signal-driven, decorator-first fr
 
 ## Following the project
 
-If you are experimenting alongside the project, pinning to a specific version and following the [GitHub repository](https://github.com/MateusGX/praxisjs) directly is recommended.
+If you are experimenting alongside the project, pinning to a specific version and following the [GitHub repository](https://github.com/praxisjs-org/praxisjs) directly is recommended.

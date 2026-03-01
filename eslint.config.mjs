@@ -7,7 +7,7 @@ import tseslint from 'typescript-eslint'
 export default tseslint.config(
   // ── Ignores ─────────────────────────────────────────────────────────────────
   {
-    ignores: ['**/dist/**', '**/node_modules/**', '**/*.d.ts', 'docs/**', 'playground/**', 'packages/create-verbose/templates/**'],
+    ignores: ['**/dist/**', '**/node_modules/**', '**/*.d.ts', 'docs/**', 'playground/**', 'packages/create-praxisjs/templates/**'],
   },
 
   // ── TypeScript source files ──────────────────────────────────────────────────
@@ -60,7 +60,7 @@ export default tseslint.config(
       // Enforce a consistent import order:
       //   1. node built-ins
       //   2. external npm packages
-      //   3. @verbose/* workspace packages
+      //   3. @praxisjs/* workspace packages
       //   4. relative imports (parent → sibling → index)
       //   5. type-only imports last
       'import-x/order': [
@@ -75,7 +75,7 @@ export default tseslint.config(
           ],
           pathGroups: [
             {
-              pattern: '@verbose/**',
+              pattern: '@praxisjs/**',
               group: 'internal',
               position: 'before',
             },

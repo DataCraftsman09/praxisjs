@@ -1,4 +1,4 @@
-import type { VNode } from "@verbose/shared";
+import type { VNode } from "@praxisjs/shared";
 
 export abstract class BaseComponent {
   /** Props passed by the parent — filled by the renderer when instantiating/updating. */

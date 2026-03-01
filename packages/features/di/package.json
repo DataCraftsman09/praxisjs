@@ -1,5 +1,5 @@
 {
-  "name": "@verbose/di",
+  "name": "@praxisjs/di",
   "version": "0.1.0",
   "type": "module",
   "main": "./dist/index.js",
@@ -16,7 +16,7 @@
   },
   "packageManager": "pnpm@10.30.2",
   "dependencies": {
-    "@verbose/core": "workspace:*",
+    "@praxisjs/core": "workspace:*",
     "reflect-metadata": "^0.2.2"
   },
   "devDependencies": {

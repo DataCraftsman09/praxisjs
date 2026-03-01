@@ -1,5 +1,5 @@
-import { computed } from "@verbose/core";
-import type { Children, VNode } from "@verbose/shared";
+import { computed } from "@praxisjs/core";
+import type { Children, VNode } from "@praxisjs/shared";
 
 import { useRouter } from "../router";
 

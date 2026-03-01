@@ -1,4 +1,4 @@
-import type { VNode } from "@verbose/shared";
+import type { VNode } from "@praxisjs/shared";
 
 import { useRouter } from "../router";
 

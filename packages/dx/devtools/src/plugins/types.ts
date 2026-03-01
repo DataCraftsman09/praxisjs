@@ -1,4 +1,4 @@
-import type { FunctionComponent } from "@verbose/shared";
+import type { FunctionComponent } from "@praxisjs/shared";
 
 import type { Registry } from "@core/registry";
 

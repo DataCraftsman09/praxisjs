@@ -1,16 +1,16 @@
 import type { Plugin, ViteDevServer } from "vite";
 
-export interface VerboseVitePluginOptions {
+export interface PraxisJSVitePluginOptions {
   hmr?: boolean;
   autoImport?: boolean;
 }
 
-export function verbose(options: VerboseVitePluginOptions = {}): Plugin[] {
+export function praxisjs(options: PraxisJSVitePluginOptions = {}): Plugin[] {
   const { hmr = true, autoImport = true } = options;
 
   return [
     {
-      name: "verbose:core",
+      name: "praxisjs:core",
       enforce: "pre",
       config() {
         return {
@@ -22,14 +22,14 @@ export function verbose(options: VerboseVitePluginOptions = {}): Plugin[] {
       transform(code, id) {
         if (!autoImport) return;
         if (!id.endsWith(".tsx") && !id.endsWith(".jsx")) return;
-        if (code.includes("@verbose/jsx/jsx-runtime")) return;
+        if (code.includes("@praxisjs/jsx/jsx-runtime")) return;
         return null;
       },
     },
     ...(hmr
       ? [
           {
-            name: "verbose:hmr",
+            name: "praxisjs:hmr",
             enforce: "post" as const,
             handleHotUpdate({
               file,
@@ -42,7 +42,7 @@ export function verbose(options: VerboseVitePluginOptions = {}): Plugin[] {
 
               server.ws.send({
                 type: "custom",
-                event: "verbose:component-update",
+                event: "praxisjs:component-update",
                 data: { file },
               });
             },
@@ -52,4 +52,4 @@ export function verbose(options: VerboseVitePluginOptions = {}): Plugin[] {
   ];
 }
 
-export default verbose;
+export default praxisjs;

@@ -1,5 +1,5 @@
-import { signal, computed, effect } from "@verbose/core";
-import type { Computed, Signal } from "@verbose/shared";
+import { signal, computed, effect } from "@praxisjs/core";
+import type { Computed, Signal } from "@praxisjs/shared";
 
 import { resolveEasing, type Easing } from "./easings";
 

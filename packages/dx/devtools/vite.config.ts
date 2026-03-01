@@ -7,7 +7,7 @@ import dts from "vite-plugin-dts";
 export default defineConfig({
   plugins: [UnoCSS(), dts({ rollupTypes: true })],
   esbuild: {
-    jsxImportSource: "@verbose/jsx",
+    jsxImportSource: "@praxisjs/jsx",
     jsx: "automatic",
   },
   build: {
@@ -18,11 +18,11 @@ export default defineConfig({
     },
     rollupOptions: {
       external: [
-        "@verbose/core",
-        "@verbose/jsx",
-        "@verbose/jsx/jsx-runtime",
-        "@verbose/runtime",
-        "@verbose/shared",
+        "@praxisjs/core",
+        "@praxisjs/jsx",
+        "@praxisjs/jsx/jsx-runtime",
+        "@praxisjs/runtime",
+        "@praxisjs/shared",
       ],
     },
     cssCodeSplit: false,

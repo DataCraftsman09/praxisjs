@@ -1,4 +1,4 @@
-import type { Computed, Signal } from "@verbose/shared";
+import type { Computed, Signal } from "@praxisjs/shared";
 
 import { activeEffect, runEffect } from "./effect";
 

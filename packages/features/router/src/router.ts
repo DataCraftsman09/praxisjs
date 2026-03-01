@@ -1,5 +1,5 @@
-import { computed, signal } from "@verbose/core";
-import type { Signal, Computed } from "@verbose/shared";
+import { computed, signal } from "@praxisjs/core";
+import type { Signal, Computed } from "@praxisjs/shared";
 
 import { compilePath, parseQuery } from "./utils";
 

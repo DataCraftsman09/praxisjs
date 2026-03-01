@@ -1,5 +1,5 @@
-import { signal, computed } from "@verbose/core";
-import type { Computed } from "@verbose/shared";
+import { signal, computed } from "@praxisjs/core";
+import type { Computed } from "@praxisjs/shared";
 
 export type StateMap<S extends string, E extends string> = Record<S, {
     on?: Partial<Record<E, S>>;
