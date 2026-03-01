@@ -113,10 +113,19 @@ Configure TypeScript to use the PraxisJS JSX runtime:
 // tsconfig.json
 {
   "compilerOptions": {
-    "experimentalDecorators": true,
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "jsx": "react-jsx",
-    "jsxImportSource": "@praxisjs/jsx"
-  }
+    "jsxImportSource": "@praxisjs/jsx",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "useDefineForClassFields": false,
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true
+  },
+  "include": ["src", "vite.config.ts"]
 }
 ```
 
