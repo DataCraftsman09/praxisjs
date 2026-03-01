@@ -12,9 +12,6 @@ hero:
     - theme: alt
       text: Browse Packages
       link: /packages/core
-    - theme: alt
-      text: GitHub
-      link: https://github.com/MateusGX/verbose
 
 features:
   - icon: ⚡

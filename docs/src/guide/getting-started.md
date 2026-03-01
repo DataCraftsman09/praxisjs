@@ -14,11 +14,61 @@ Decorators like `@State`, `@Prop`, and `@Watch` aren't boilerplate — they're d
 
 Reactivity is **explicit, fine-grained, and TypeScript-native**. Signals propagate changes directly to the DOM nodes that care about them — no reconciliation pass, no diffing overhead.
 
-::: tip Scaffold a project instantly
-Use [create-verbose](/guide/create-verbose) to generate a fully configured project with a single command — no manual setup needed.
+## Automatic setup
+
+Run `create-verbose` to generate a new project with TypeScript, Vite, JSX, and all dependencies already configured.
+
+::: code-group
+
+```sh [npm]
+npm create verbose@latest
+```
+
+```sh [pnpm]
+pnpm create verbose
+```
+
+```sh [yarn]
+yarn create verbose
+```
+
+```sh [bun]
+bun create verbose
+```
+
 :::
 
-## Installation
+You can also pass the project name as an argument to skip the first prompt:
+
+```sh
+npm create verbose@latest my-app
+```
+
+The CLI will then ask which template to use:
+
+| Template | Includes |
+| -------- | -------- |
+| Minimal | `@verbose/core`, `@verbose/decorators`, `@verbose/jsx`, `@verbose/runtime` |
+| With Router | Minimal + `@verbose/router` |
+| Full | Router + `@verbose/store`, `@verbose/di`, `@verbose/composables`, `@verbose/concurrent`, `@verbose/devtools` |
+
+Once the project is created, install dependencies and start the dev server:
+
+```sh
+cd my-app
+npm install
+npm run dev
+```
+
+The dev server starts at `http://localhost:5173` with HMR enabled via `@verbose/vite-plugin`.
+
+---
+
+## Manual setup
+
+Prefer to configure everything yourself? Install only the packages you need.
+
+### Installation
 
 ::: code-group
 
@@ -39,7 +89,7 @@ yarn add -D @verbose/vite-plugin
 
 :::
 
-## Project Setup
+### Project setup
 
 Configure Vite to use the Verbose plugin:
 
@@ -66,7 +116,7 @@ Configure TypeScript to use the Verbose JSX runtime:
 }
 ```
 
-## Your First Component
+### Your first component
 
 ```tsx
 import { Component, State, Prop } from "@verbose/decorators";
@@ -92,7 +142,7 @@ class Counter extends BaseComponent {
 }
 ```
 
-## Mounting the App
+### Mounting the app
 
 ```ts
 import { render } from '@verbose/runtime'
@@ -100,7 +150,9 @@ import { render } from '@verbose/runtime'
 render(<Counter initialCount={0} />, document.getElementById('app')!)
 ```
 
-## Package Overview
+---
+
+## Package overview
 
 | Package                              | Purpose                                                         |
 | ------------------------------------ | --------------------------------------------------------------- |
