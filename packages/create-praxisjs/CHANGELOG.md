@@ -1,5 +1,11 @@
 # create-praxisjs
 
+## 0.1.2
+
+### Patch Changes
+
+- 564f711: Fix signals not working due to missing useDefineForClassFields: false in template tsconfigs
+
 ## 0.1.1
 
 ### Patch Changes
