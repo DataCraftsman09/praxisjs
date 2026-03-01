@@ -157,6 +157,10 @@ export class Registry {
     if (hook === "onUnmount") {
       entry.status = "unmounted";
       this.bus.emit("component:unmount", { ...entry });
+      this.components.delete(id);
+      for (const [sid, s] of this.signals) {
+        if (s.componentId === id) this.signals.delete(sid);
+      }
     }
   }
 

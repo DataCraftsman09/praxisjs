@@ -30,7 +30,7 @@ function DevToolsApp({
   plugins: DevtoolsPlugin[];
   registry: Registry;
 }) {
-  const open = signal(true);
+  const open = signal(false);
 
   return (
     <div>
