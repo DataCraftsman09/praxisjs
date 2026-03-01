@@ -37,9 +37,16 @@ A signal-driven frontend framework written in TypeScript. PraxisJS combines fine
 
 ### DX
 
-| Package                 | Description      |
-| ----------------------- | ---------------- |
-| `@praxisjs/vite-plugin` | Vite integration |
+| Package                 | Description         |
+| ----------------------- | ------------------- |
+| `@praxisjs/vite-plugin` | Vite integration    |
+| `@praxisjs/devtools`    | Developer tools UI  |
+
+### Tooling
+
+| Package           | Description                    |
+| ----------------- | ------------------------------ |
+| `create-praxisjs` | Project scaffolding CLI (npm init) |
 
 ## Development
 
