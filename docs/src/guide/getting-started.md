@@ -3,7 +3,7 @@
 PraxisJS is a signal-driven frontend framework built with TypeScript. It provides fine-grained reactivity, class components with decorators, and a complete ecosystem of first-party packages.
 
 ::: info Personal project
-PraxisJS is a personal project, born from a personal vision about how frontend development could look and feel. The ideas here reflect one person's perspective — not a consensus, not a committee. At the outset, the project also served as a deliberate exercise in evaluating AI-assisted development: how far could these tools go, where did they fall short, and what did they change about the process of translating an idea into working code. Part of what exists here was shaped through that collaboration.
+PraxisJS is a personal project, born from a personal vision of what a more explicit, traceable frontend architecture could look like. The ideas here reflect a single perspective — not a consensus, not a committee. It also became an experiment in AI-assisted development: not to automate thinking, but to pressure-test ideas, surface blind spots, and accelerate iteration. Some parts were shaped through that collaboration — and some parts exist precisely because the AI fell short.
 :::
 
 ::: warning Experimental
