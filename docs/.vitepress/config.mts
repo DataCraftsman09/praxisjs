@@ -89,7 +89,7 @@ export default defineConfig({
       message:
         'Released under the <a href="https://github.com/praxisjs-org/praxisjs/blob/main/LICENSE">MIT License</a>.',
       copyright:
-        'Copyright © 2025-present <a href="https://github.com/MateusGX">Mateus Martins</a>  — PraxisJS is experimental software, use at your own risk.',
+        'Copyright © 2026-present <a href="https://github.com/MateusGX">Mateus Martins</a>  — PraxisJS is experimental software, use at your own risk.',
     },
   },
   head: [["link", { rel: "icon", type: "image/svg+xml", href: "/logo.svg" }]],
