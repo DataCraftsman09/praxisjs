@@ -5,6 +5,7 @@ import { compilePath, parseQuery } from "./utils";
 
 import type {
   CompiledRoute,
+  LazyRouteComponent,
   RouteComponent,
   RouteDefinition,
   RouteLocation,
@@ -17,9 +18,15 @@ export class Router {
   private readonly _location: Signal<RouteLocation>;
   private _prevLocation: RouteLocation | null = null;
   private readonly _component: Signal<RouteComponent | null>;
+  private readonly _loading: Signal<boolean>;
+  private readonly _resolvedComponents = new Map<
+    LazyRouteComponent,
+    RouteComponent
+  >();
 
   readonly location: Signal<RouteLocation>;
   readonly currentComponent: Signal<RouteComponent | null>;
+  readonly loading: Signal<boolean>;
   readonly params: Computed<RouteParams>;
   readonly query: Computed<RouteQuery>;
 
@@ -34,18 +41,20 @@ export class Router {
       window.location.hash,
     );
     this._location = signal<RouteLocation>(initial);
-    this._component = signal<RouteComponent | null>(
-      this.matchComponent(initial.path),
-    );
+    this._loading = signal<boolean>(false);
+    this._component = signal<RouteComponent | null>(null);
 
     this.location = this._location;
     this.currentComponent = this._component;
+    this.loading = this._loading;
 
     this.params = computed(() => this._location().params);
     this.query = computed(() => this._location().query);
 
+    void this.resolveAndSetComponent(initial.path);
+
     window.addEventListener("popstate", () => {
-      this.syncFromBrowser();
+      void this.syncFromBrowser();
     });
   }
 
@@ -88,23 +97,48 @@ export class Router {
     return {};
   }
 
-  private matchComponent(path: string): RouteComponent | null {
+  private isLazy(
+    c: RouteComponent | LazyRouteComponent,
+  ): c is LazyRouteComponent {
+    return "__isLazy" in c && (c).__isLazy;
+  }
+
+  private async resolveComponent(
+    path: string,
+  ): Promise<RouteComponent | null> {
     for (const route of this.compiled) {
-      if (route.regex.test(path)) {
-        return route.definition.component;
+      if (!route.regex.test(path)) continue;
+      const { component } = route.definition;
+      if (!this.isLazy(component)) return component;
+
+      const cached = this._resolvedComponents.get(component);
+      if (cached) return cached;
+
+      this._loading.set(true);
+      try {
+        const mod = await component();
+        this._resolvedComponents.set(component, mod.default);
+        return mod.default;
+      } finally {
+        this._loading.set(false);
       }
     }
     return null;
   }
 
-  private syncFromBrowser(): void {
+  private async resolveAndSetComponent(path: string): Promise<void> {
+    const component = await this.resolveComponent(path);
+    this._component.set(component);
+  }
+
+  private async syncFromBrowser(): Promise<void> {
     const loc = this.buildLocation(
       window.location.pathname,
       window.location.search,
       window.location.hash,
     );
     this._location.set(loc);
-    this._component.set(this.matchComponent(loc.path));
+    await this.resolveAndSetComponent(loc.path);
   }
 
   async push(path: string, query?: RouteQuery, hash?: string): Promise<void> {
@@ -129,17 +163,17 @@ export class Router {
     this._prevLocation = this._location();
     window.history.pushState(null, "", fullUrl);
     this._location.set(loc);
-    this._component.set(this.matchComponent(path));
+    await this.resolveAndSetComponent(path);
   }
 
-  replace(path: string, query?: RouteQuery): void {
+  async replace(path: string, query?: RouteQuery): Promise<void> {
     const search = query ? "?" + new URLSearchParams(query).toString() : "";
     const loc = this.buildLocation(path, search, "");
 
     this._prevLocation = this._location();
     window.history.replaceState(null, "", path + search);
     this._location.set(loc);
-    this._component.set(this.matchComponent(path));
+    await this.resolveAndSetComponent(path);
   }
 
   back(): void {
@@ -155,6 +189,14 @@ export class Router {
 }
 
 let _router: Router | null = null;
+
+
+export function lazy(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  loader: () => Promise<{ default: new (...args: any[]) => any }>,
+): LazyRouteComponent {
+  return Object.assign(() => loader(), { __isLazy: true as const });
+}
 
 export function createRouter(routes: RouteDefinition[]): Router {
   _router = new Router(routes);

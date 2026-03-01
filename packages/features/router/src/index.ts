@@ -1,5 +1,6 @@
 export {
   createRouter,
+  lazy,
   useRouter,
   useParams,
   useQuery,
@@ -12,6 +13,7 @@ export type {
   RouteParams,
   RouteQuery,
   RouteComponent,
+  LazyRouteComponent,
 } from "./types/route";
 
 export { RouterView, Link } from "./components";
