@@ -8,19 +8,23 @@ export function ComponentRow({
   onClick,
 }: {
   entry: ComponentEntry;
-  selected: boolean;
+  selected: () => boolean;
   onClick: () => void;
 }) {
   return (
     <div
       onClick={onClick}
-      class={`relative flex items-center gap-2 px-3 py-2 cursor-pointer border-b border-border transition-colors duration-100 ${
-        selected ? "bg-selected" : "hover:bg-section"
-      }`}
+      class={() =>
+        `relative flex items-center gap-2 px-3 py-2 cursor-pointer border-b border-border transition-colors duration-100 ${
+          selected() ? "bg-selected" : "hover:bg-section"
+        }`
+      }
     >
-      {selected && (
-        <span class="absolute left-0 top-0 bottom-0 w-[2px] bg-accent rounded-r" />
-      )}
+      {() =>
+        selected() && (
+          <span class="absolute left-0 top-0 bottom-0 w-[2px] bg-accent rounded-r" />
+        )
+      }
       <StatusDot status={entry.status} />
       <span class="text-accent font-mono text-[11px] flex-1 truncate pl-1">
         &lt;{entry.name}&gt;

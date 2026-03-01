@@ -1,6 +1,6 @@
 import { EmptyState } from "@shared/empty-state";
 
-import { signal, effect, onMount, onUnmount } from "@verbose/core";
+import { signal, effect, peek, onMount, onUnmount } from "@verbose/core";
 
 import { ComponentDetail } from "./components/component-detail";
 import { ComponentRow } from "./components/component-row";
@@ -22,7 +22,7 @@ export function ComponentsTab({ registry }: { registry: Registry }) {
   onMount(() => {
     const refresh = () => {
       components.set(registry.getComponents());
-      const id = selectedId();
+      const id = peek(selectedId);
       if (id) sigs.set(registry.getSignalsByComponent(id));
     };
     handlers = [
@@ -60,7 +60,7 @@ export function ComponentsTab({ registry }: { registry: Registry }) {
                 <ComponentRow
                   key={c.id}
                   entry={c}
-                  selected={selectedId() === c.id}
+                  selected={() => selectedId() === c.id}
                   onClick={() => {
                     selectedId.update((id) => (id === c.id ? null : c.id));
                   }}
