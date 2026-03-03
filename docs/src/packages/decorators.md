@@ -82,6 +82,50 @@ class Toggle extends BaseComponent {
 }
 ```
 
+### `@Persisted(key?, options?)`
+
+Declares a reactive property backed by `localStorage`. Works like `@State()` but the value survives page reloads. The `key` defaults to the property name when omitted.
+
+```ts
+import { Component, Persisted } from '@praxisjs/decorators'
+import { BaseComponent } from '@praxisjs/core'
+
+@Component()
+class Settings extends BaseComponent {
+  @Persisted() theme = 'light'
+  @Persisted('app:count') count = 0
+
+  render() {
+    return (
+      <div>
+        <p>Theme: {this.theme}</p>
+        <button onClick={() => { this.theme = this.theme === 'light' ? 'dark' : 'light' }}>
+          Toggle theme
+        </button>
+      </div>
+    )
+  }
+}
+```
+
+Setting the property to `null` or `undefined` removes the entry from `localStorage`.
+
+| Option        | Type                        | Default         | Description                              |
+| ------------- | --------------------------- | --------------- | ---------------------------------------- |
+| `serialize`   | `(value: T) => string`      | `JSON.stringify` | Custom serialization                    |
+| `deserialize` | `(value: string) => T`      | `JSON.parse`    | Custom deserialization                   |
+| `syncTabs`    | `boolean`                   | `true`          | Sync value across browser tabs via the `storage` event |
+
+**Custom serialization example:**
+
+```ts
+@Persisted('user:flags', {
+  serialize: (v) => v.join(','),
+  deserialize: (s) => s.split(','),
+})
+flags: string[] = []
+```
+
 ---
 
 ## Watching State
