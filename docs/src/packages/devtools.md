@@ -120,7 +120,7 @@ import { Component } from '@praxisjs/decorators'
 @Component()
 class Counter extends BaseComponent {
   render() {
-    return <div>{this.count}</div>
+    return <div>{() => this.count}</div>
   }
 }
 ```

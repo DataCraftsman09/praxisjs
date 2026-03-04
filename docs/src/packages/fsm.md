@@ -128,7 +128,7 @@ class FetchButton extends BaseComponent {
   render() {
     return (
       <button
-        disabled={this.machine.is('loading')}
+        disabled={() => this.machine.is('loading')}
         onClick={() => this.fetch()}
       >
         {() => this.machine.state() === 'loading' ? 'Loading…' : 'Fetch'}

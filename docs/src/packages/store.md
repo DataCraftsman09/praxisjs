@@ -130,7 +130,7 @@ class Header extends BaseComponent {
   render() {
     return (
       <nav>
-        {this.auth.user ? (
+        {() => this.auth.user ? (
           <button onClick={() => this.auth.logout()}>Logout</button>
         ) : (
           <a href="/login">Login</a>

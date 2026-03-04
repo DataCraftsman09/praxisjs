@@ -151,7 +151,7 @@ class Counter extends BaseComponent {
   render() {
     return (
       <div>
-        <p>Count: {this.count}</p>
+        <p>Count: {() => this.count}</p>
         <button onClick={() => this.increment()}>Increment</button>
       </div>
     );

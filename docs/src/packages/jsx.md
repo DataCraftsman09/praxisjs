@@ -148,7 +148,7 @@ class Card extends BaseComponent {
   render() {
     return (
       <div class="card">
-        <h2>{this.title}</h2>
+        <h2>{() => this.title}</h2>
         {this.default}
       </div>
     );

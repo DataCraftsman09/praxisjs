@@ -75,24 +75,24 @@ class UserCard extends BaseComponent {
     if (error()) return <div class="error">{(error() as Error).message}</div>;
 
     return (
-      <div class={`card ${this.elevated ? "elevated" : ""}`}>
+      <div class={() => `card ${this.elevated ? "elevated" : ""}`}>
         <header>
-          {this.editing ? (
+          {() => this.editing ? (
             <input
-              value={this.name}
+              value={() => this.name}
               onInput={(e) => {
                 this.name = (e.target as HTMLInputElement).value;
               }}
             />
           ) : (
-            <h2>{data()?.name}</h2>
+            <h2>{() => data()?.name}</h2>
           )}
         </header>
 
         <main>{this.default}</main>
 
         <footer>
-          {this.editing ? (
+          {() => this.editing ? (
             <button onClick={() => this.save()}>Save</button>
           ) : (
             <button
@@ -143,7 +143,7 @@ Props are read directly as `this.propName` — the `@Prop()` decorator creates a
 
 ```tsx
 render() {
-  return <div class={this.elevated ? 'elevated' : ''} />
+  return <div class={() => this.elevated ? 'elevated' : ''} />
 }
 ```
 
@@ -151,7 +151,7 @@ render() {
 
 ### 3. Local state — `@State()`
 
-Internal component state. Each `@State` property is a signal; any assignment schedules a re-render.
+Internal component state. Each `@State` property is backed by a signal.
 
 ```ts
 @State() editing = false
@@ -161,9 +161,45 @@ Internal component state. Each `@State` property is a signal; any assignment sch
 Direct read and write:
 
 ```ts
-this.editing; // reads current value
-this.editing = true; // updates and schedules re-render
+this.editing       // reads current value
+this.editing = true  // updates the signal
 ```
+
+#### Reactivity in templates
+
+PraxisJS uses **fine-grained reactivity** — only the exact DOM nodes that depend on a signal are updated when it changes. The component's `render()` method is **not** called again on state change. This means you must pass signal reads as **arrow functions** in JSX for them to stay reactive:
+
+```tsx
+// ✗ static — evaluated once at render time, never updates
+{this.count}
+
+// ✓ reactive — the renderer wraps this in its own effect
+{() => this.count}
+```
+
+The same rule applies to attributes, class names, and conditional content:
+
+```tsx
+// ✗ static
+<div class={`card ${this.active ? "active" : ""}`} />
+
+// ✓ reactive
+<div class={() => `card ${this.active ? "active" : ""}`} />
+```
+
+```tsx
+// ✗ static — condition evaluated once, never re-evaluated
+{this.editing ? <input /> : <span>{this.name}</span>}
+
+// ✓ reactive — whole branch is re-evaluated when editing changes
+{() => this.editing ? <input /> : <span>{() => this.name}</span>}
+```
+
+::: tip Why arrow functions?
+When you write `{this.count}`, JSX evaluates `this.count` immediately and passes the raw value (e.g. `0`) to the renderer. There is no way to recover the reactive dependency later.
+
+When you write `{() => this.count}`, the renderer receives a function. It runs that function inside its own `effect()`, so reading `this.count` inside it registers a subscription — and the specific DOM node is updated whenever the signal changes.
+:::
 
 ---
 
@@ -181,9 +217,11 @@ user = resource(async () => {
 In the template:
 
 ```tsx
-if (this.user.pending()) return <Spinner />;
-if (this.user.error()) return <Error />;
-return <h2>{this.user.data()?.name}</h2>;
+{() => {
+  if (this.user.pending()) return <Spinner />;
+  if (this.user.error()) return <Error />;
+  return <h2>{() => this.user.data()?.name}</h2>;
+}}
 ```
 
 Manual actions:
@@ -313,23 +351,20 @@ onUnmount() {
 
 ### 10. Render
 
-The only required method. Must return a `VNode` or `null`. Re-executes reactively whenever any signal read inside it changes.
+The only required method. Must return a `VNode` or `null`. It runs **once** on mount — state changes update only the specific DOM nodes bound with arrow functions, not the whole component.
 
 ```tsx
 render() {
-  // Signal reads here create reactive dependencies
-  const { data, pending } = this.user
-
   return (
     <div>
-      {() => pending() ? <Spinner /> : <h2>{data()?.name}</h2>}
+      {() => this.user.pending() ? <Spinner /> : <h2>{() => this.user.data()?.name}</h2>}
     </div>
   )
 }
 ```
 
 ::: tip
-Prefer reading `@State` and `@Prop` values directly inside `render()` rather than storing them in variables outside — this ensures the reactive tracking works correctly.
+Wrap any dynamic value in an arrow function `{() => ...}` to keep it reactive. A plain `{this.value}` is read once at mount and never updated.
 :::
 
 ---

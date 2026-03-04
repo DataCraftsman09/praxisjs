@@ -181,7 +181,7 @@ class ProgressBar extends BaseComponent {
   @State() progress = 0
 
   render() {
-    return <div style={{ width: `${this.progress}%` }} />
+    return <div style={() => ({ width: `${this.progress}%` })} />
   }
 }
 ```

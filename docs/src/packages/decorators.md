@@ -58,7 +58,7 @@ class Card extends BaseComponent {
   @Prop() elevated = false
 
   render() {
-    return <div class={this.elevated ? 'elevated' : ''}>{this.title}</div>
+    return <div class={() => this.elevated ? 'elevated' : ''}>{() => this.title}</div>
   }
 }
 ```
@@ -75,12 +75,18 @@ class Toggle extends BaseComponent {
   render() {
     return (
       <button onClick={() => { this.open = !this.open }}>
-        {this.open ? 'Close' : 'Open'}
+        {() => this.open ? 'Close' : 'Open'}
       </button>
     )
   }
 }
 ```
+
+::: tip Why arrow functions in templates?
+PraxisJS uses fine-grained reactivity — `render()` is called **once** on mount. To keep a value reactive in the DOM, pass it as a function: `{() => this.open}`. The renderer wraps that function in its own `effect()` and updates only that node when the signal changes.
+
+`{this.open}` evaluates immediately to the current value (e.g. `false`) and is never updated again.
+:::
 
 ### `@Persisted(key?, options?)`
 
@@ -98,7 +104,7 @@ class Settings extends BaseComponent {
   render() {
     return (
       <div>
-        <p>Theme: {this.theme}</p>
+        <p>Theme: {() => this.theme}</p>
         <button onClick={() => { this.theme = this.theme === 'light' ? 'dark' : 'light' }}>
           Toggle theme
         </button>
@@ -298,7 +304,7 @@ class Input extends BaseComponent {
   }
 
   render() {
-    return <input value={this.value} onInput={this.handleInput} />
+    return <input value={() => this.value} onInput={this.handleInput} />
   }
 }
 ```
@@ -388,7 +394,7 @@ class Avatar extends BaseComponent {
   @Prop() size = 48
 
   render() {
-    return <img src={this.url} width={this.size} />
+    return <img src={() => this.url} width={() => this.size} />
   }
 }
 ```
