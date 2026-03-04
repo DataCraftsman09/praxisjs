@@ -12,5 +12,5 @@ export {
   type WatchVal,
   type WatchVals,
 } from "./functions";
-export { Prop, State, Persisted, Slot, initSlots, History } from "./properties";
+export { Prop, State, Persisted, Slot, initSlots, History, type WithHistory } from "./properties";
 export { type Command, createCommand, Emit, OnCommand } from "./events";

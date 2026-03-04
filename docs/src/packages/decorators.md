@@ -202,6 +202,24 @@ class Editor extends BaseComponent {
     this.textHistory.redo();
   }
 }
+interface Editor extends WithHistory<Editor, "text"> {}
+```
+
+Since TypeScript cannot infer properties added by decorators at runtime, use `WithHistory<Class, 'prop'>` to declare the generated `{prop}History` type — either via interface merging or a `declare` field inside the class:
+
+```ts
+// Option 1: interface merging (outside the class)
+interface Editor extends WithHistory<Editor, "text"> {}
+
+// Option 2: declare field (inside the class)
+@Component()
+class Editor extends BaseComponent {
+  @History(100)
+  @State()
+  text = "";
+
+  declare textHistory: WithHistory<Editor, "text">["textHistory"];
+}
 ```
 
 The `{prop}History` object exposes: `undo()`, `redo()`, `canUndo`, `canRedo`, `values`, `clear()`.

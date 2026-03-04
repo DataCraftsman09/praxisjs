@@ -1,6 +1,6 @@
 import { type Computed, isSignal, type Signal } from "@praxisjs/shared";
 
-import { computed, signal } from "../signal";
+import { computed, signal, peek } from "../signal";
 import { effect } from "../signal/effect";
 
 export interface HistoryElement<T> {
@@ -24,17 +24,24 @@ export function history<T>(
   const _current = signal<T>(read());
 
   let _ignoreNext = false;
+  let _initialized = false;
 
   effect(() => {
     const value = read();
+
+    if (!_initialized) {
+      _initialized = true;
+      _current.set(value);
+      return;
+    }
 
     if (_ignoreNext) {
       _ignoreNext = false;
       return;
     }
 
-    const past = _past();
-    const next = [...past, _current()];
+    const past = peek(_past);
+    const next = [...past, peek(_current)];
     _past.set(next.length > limit ? next.slice(next.length - limit) : next);
     _future.set([]);
     _current.set(value);

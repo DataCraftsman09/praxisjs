@@ -1,27 +1,16 @@
 import { type HistoryElement, history } from "@praxisjs/core";
 
+export type WithHistory<T, K extends keyof T> = Record<`${string & K}History`, HistoryElement<T[K]>>;
+
 export function History(limit = 50) {
   return function (target: object, propertyKey: string): void {
     const historyKey = `${propertyKey}History`;
     const histories = new WeakMap<object, HistoryElement<unknown>>();
 
-    const originalDescriptor = Object.getOwnPropertyDescriptor(
-      target,
-      propertyKey,
-    );
-
     Object.defineProperty(target, historyKey, {
-      get(this: object): HistoryElement<unknown> {
+      get(this: Record<string, unknown>): HistoryElement<unknown> {
         if (!histories.has(this)) {
-          const source = () => {
-            const desc =
-              Object.getOwnPropertyDescriptor(this, propertyKey) ??
-              Object.getOwnPropertyDescriptor(
-                Object.getPrototypeOf(this),
-                propertyKey,
-              );
-            return desc?.get?.call(this) as unknown;
-          };
+          const source = () => this[propertyKey];
 
           const h = history(source as () => unknown, limit);
 
@@ -32,23 +21,12 @@ export function History(limit = 50) {
             const prev = h.values()[h.values().length - 2];
             if (prev === undefined) return;
             originalUndo();
-            (
-              Object.getOwnPropertyDescriptor(
-                Object.getPrototypeOf(this),
-                propertyKey,
-              ) ?? originalDescriptor
-            )?.set?.call(this, prev);
+            this[propertyKey] = prev;
           };
 
           h.redo = () => {
             originalRedo();
-            const next = h.current();
-            (
-              Object.getOwnPropertyDescriptor(
-                Object.getPrototypeOf(this),
-                propertyKey,
-              ) ?? originalDescriptor
-            )?.set?.call(this, next);
+            this[propertyKey] = h.current();
           };
 
           histories.set(this, h);
