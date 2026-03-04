@@ -1,7 +1,7 @@
 ---
 "@praxisjs/core": minor
 "@praxisjs/decorators": minor
-"@praxisjs/create-praxisjs": minor
+"create-praxisjs": minor
 ---
 
 Introduce WithHistory<T, K> utility type for better TypeScript inference when using the @History decorator, and fix performance issues in the history() primitive.
