@@ -1,4 +1,4 @@
-import { signal, computed, effect } from "@praxisjs/core";
+import { signal, computed, effect } from "@praxisjs/core/internal";
 import type { Computed } from "@praxisjs/shared";
 
 export function createRef(): { current: HTMLElement | null } {
@@ -22,7 +22,9 @@ export function useElementSize(ref: { current: HTMLElement | null }) {
   return {
     width: computed(() => width()),
     height: computed(() => height()),
-    stop: () => { observer.disconnect(); },
+    stop: () => {
+      observer.disconnect();
+    },
   };
 }
 
@@ -55,13 +57,14 @@ export function useIntersection(
   options?: IntersectionObserverInit,
 ): Computed<boolean> {
   const visible = signal(false);
-  const observer = new IntersectionObserver(
-    ([entry]) => { visible.set(entry.isIntersecting); },
-    options,
-  );
+  const observer = new IntersectionObserver(([entry]) => {
+    visible.set(entry.isIntersecting);
+  }, options);
   effect(() => {
     if (ref.current) observer.observe(ref.current);
-    return () => { observer.disconnect(); };
+    return () => {
+      observer.disconnect();
+    };
   });
   return computed(() => visible());
 }
@@ -73,8 +76,12 @@ export function useFocus(ref: {
   effect(() => {
     const el = ref.current;
     if (!el) return;
-    const onFocus = () => { focused.set(true); };
-    const onBlur = () => { focused.set(false); };
+    const onFocus = () => {
+      focused.set(true);
+    };
+    const onBlur = () => {
+      focused.set(false);
+    };
     el.addEventListener("focus", onFocus);
     el.addEventListener("blur", onBlur);
     return () => {

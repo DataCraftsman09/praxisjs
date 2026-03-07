@@ -1,4 +1,4 @@
-import { signal, computed } from "@praxisjs/core";
+import { signal, computed } from "@praxisjs/core/internal";
 import type { Signal, Computed } from "@praxisjs/shared";
 
 export function useClipboard(resetDelay = 2000) {
@@ -9,7 +9,9 @@ export function useClipboard(resetDelay = 2000) {
       await navigator.clipboard.writeText(text);
       content.set(text);
       copied.set(true);
-      setTimeout(() => { copied.set(false); }, resetDelay);
+      setTimeout(() => {
+        copied.set(false);
+      }, resetDelay);
     } catch {
       console.warn("[useClipboard] Falha ao copiar");
     }
@@ -55,7 +57,9 @@ export function useTimeAgo(
 ): Computed<string> {
   const read = typeof source === "function" ? source : source;
   const tick = signal(Date.now());
-  setInterval(() => { tick.set(Date.now()); }, 60_000);
+  setInterval(() => {
+    tick.set(Date.now());
+  }, 60_000);
   const rtf = new Intl.RelativeTimeFormat(locale, { numeric: "auto" });
 
   return computed(() => {

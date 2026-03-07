@@ -1,12 +1,12 @@
-import { signal, computed } from "@praxisjs/core";
+import { signal, computed } from "@praxisjs/core/internal";
 import type { Computed } from "@praxisjs/shared";
 
 export function useMediaQuery(query: string): Computed<boolean> {
   const mql = window.matchMedia(query);
   const matches = signal(mql.matches);
-  mql.addEventListener("change", (e: MediaQueryListEvent) =>
-    { matches.set(e.matches); },
-  );
+  mql.addEventListener("change", (e: MediaQueryListEvent) => {
+    matches.set(e.matches);
+  });
   return computed(() => matches());
 }
 
@@ -39,7 +39,9 @@ export function useKeyCombo(combo: string): Computed<boolean> {
     if (ctrl && shift && alt && (!key || e.key.toLowerCase() === key))
       pressed.set(true);
   });
-  window.addEventListener("keyup", () => { pressed.set(false); });
+  window.addEventListener("keyup", () => {
+    pressed.set(false);
+  });
   return computed(() => pressed());
 }
 
@@ -49,11 +51,13 @@ export function useIdle(timeout = 60_000): Computed<boolean> {
   const reset = () => {
     idle.set(false);
     clearTimeout(timer);
-    timer = setTimeout(() => { idle.set(true); }, timeout);
+    timer = setTimeout(() => {
+      idle.set(true);
+    }, timeout);
   };
-  ["mousemove", "keydown", "click", "scroll", "touchstart"].forEach((e) =>
-    { window.addEventListener(e, reset, { passive: true }); },
-  );
+  ["mousemove", "keydown", "click", "scroll", "touchstart"].forEach((e) => {
+    window.addEventListener(e, reset, { passive: true });
+  });
   reset();
   return computed(() => idle());
 }
