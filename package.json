@@ -16,6 +16,8 @@
     "build:dx": "pnpm --filter './packages/dx/**' build",
     "build:utils": "pnpm --filter './packages/utils/**' build",
     "changeset": "changeset",
+    "version-packages": "changeset version && node scripts/sync-template-versions.mjs",
+    "release": "changeset publish",
     "sync-templates": "node scripts/sync-template-versions.mjs"
   },
   "lint-staged": {
