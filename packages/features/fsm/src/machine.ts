@@ -1,11 +1,14 @@
-import { signal, computed } from "@praxisjs/core";
+import { signal, computed } from "@praxisjs/core/internal";
 import type { Computed } from "@praxisjs/shared";
 
-export type StateMap<S extends string, E extends string> = Record<S, {
+export type StateMap<S extends string, E extends string> = Record<
+  S,
+  {
     on?: Partial<Record<E, S>>;
     onEnter?: () => void;
     onExit?: () => void;
-  }>;
+  }
+>;
 
 export interface MachineDefinition<S extends string, E extends string> {
   initial: S;
