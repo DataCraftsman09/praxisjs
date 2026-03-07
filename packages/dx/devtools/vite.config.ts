@@ -1,11 +1,11 @@
 import path from "path";
 
 import UnoCSS from "unocss/vite";
-import { defineConfig } from "vite";
+import { defineConfig, type PluginOption } from "vite";
 import dts from "vite-plugin-dts";
 
 export default defineConfig({
-  plugins: [UnoCSS(), dts({ rollupTypes: true })],
+  plugins: [...UnoCSS(), dts({ rollupTypes: true })] as PluginOption[],
   esbuild: {
     jsxImportSource: "@praxisjs/jsx",
     jsx: "automatic",
@@ -17,13 +17,7 @@ export default defineConfig({
       fileName: "index",
     },
     rollupOptions: {
-      external: [
-        "@praxisjs/core",
-        "@praxisjs/jsx",
-        "@praxisjs/jsx/jsx-runtime",
-        "@praxisjs/runtime",
-        "@praxisjs/shared",
-      ],
+      external: (id) => id.startsWith("@praxisjs/"),
     },
     cssCodeSplit: false,
   },

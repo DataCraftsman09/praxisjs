@@ -1,4 +1,4 @@
-import { Registry } from '../core/registry';
+import { Registry } from "../core/registry";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyConstructor = new (...args: any[]) => any;
@@ -9,16 +9,18 @@ type AnyConstructor = new (...args: any[]) => any;
  *
  * @Trace()
  * @Component()
- * class MyComponent extends BaseComponent { ... }
+ * class MyComponent extends StatefulComponent { ... }
  */
 export function Trace() {
-  return function <T extends AnyConstructor>(constructor: T): T {
+  return function <T extends AnyConstructor>(constructor: T, _context: ClassDecoratorContext): T {
     const name = constructor.name;
     const registry = Registry.instance;
     const proto = constructor.prototype as Record<string, unknown>;
 
     // ── render() ──────────────────────────────────────────────────────────
-    const originalRender = proto.render as ((...args: unknown[]) => unknown) | undefined;
+    const originalRender = proto.render as
+      | ((...args: unknown[]) => unknown)
+      | undefined;
 
     if (originalRender) {
       proto.render = function (this: object, ...args: unknown[]) {
@@ -37,21 +39,23 @@ export function Trace() {
 
     proto.onBeforeMount = function (this: object, ...args: unknown[]) {
       registry.registerComponent(this, name);
-      registry.recordLifecycle(this, 'onBeforeMount');
+      registry.recordLifecycle(this, "onBeforeMount");
       return originalOnBeforeMount?.call(this, ...args);
     };
 
     // ── remaining lifecycle hooks ─────────────────────────────────────────
     const hooks = [
-      'onMount',
-      'onUnmount',
-      'onBeforeUpdate',
-      'onUpdate',
-      'onAfterUpdate',
+      "onMount",
+      "onUnmount",
+      "onBeforeUpdate",
+      "onUpdate",
+      "onAfterUpdate",
     ] as const;
 
     for (const hook of hooks) {
-      const original = proto[hook] as ((...args: unknown[]) => unknown) | undefined;
+      const original = proto[hook] as
+        | ((...args: unknown[]) => unknown)
+        | undefined;
 
       proto[hook] = function (this: object, ...args: unknown[]) {
         registry.recordLifecycle(this, hook);

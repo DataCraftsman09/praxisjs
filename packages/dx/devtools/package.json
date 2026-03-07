@@ -17,18 +17,19 @@
     "dev": "vite build --watch"
   },
   "dependencies": {
-    "@unocss/reset": "^66.6.2",
     "@praxisjs/core": "workspace:*",
+    "@praxisjs/decorators": "workspace:*",
     "@praxisjs/jsx": "workspace:*",
     "@praxisjs/runtime": "workspace:*",
-    "@praxisjs/shared": "workspace:*"
+    "@praxisjs/shared": "workspace:*",
+    "@unocss/reset": "^66.6.2"
   },
   "devDependencies": {
     "@types/node": "^25.3.0",
     "@unocss/cli": "^66.6.2",
-    "@unocss/preset-wind3": "^66.6.2",
+    "@unocss/preset-wind3": "^66.6.6",
     "typescript": "^5.9.3",
-    "unocss": "^66.6.2",
+    "unocss": "^66.6.6",
     "vite": "^7.3.1",
     "vite-plugin-dts": "^4.5.4"
   },
