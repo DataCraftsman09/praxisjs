@@ -1,31 +1,32 @@
 const storeRegistry = new Map<new (...args: unknown[]) => unknown, unknown>();
 
 export function Store() {
-  return function <T extends new (...args: unknown[]) => unknown>(constructor: T): T {
-    storeRegistry.set(constructor, null);
-    return constructor;
+  return function (value: new (...args: unknown[]) => unknown, _context: ClassDecoratorContext): void {
+    storeRegistry.set(value, null);
   };
 }
 
 export function UseStore(StoreConstructor: new () => unknown) {
-  const cache = new WeakMap<object, unknown>();
+  return function (_value: undefined, context: ClassFieldDecoratorContext): void {
+    const cache = new WeakMap<object, unknown>();
 
-  return function (target: object, propertyKey: string | symbol): void {
-    Object.defineProperty(target, propertyKey, {
-      get(this: object): unknown {
-        if (!cache.has(this)) {
-          if (
-            !storeRegistry.has(StoreConstructor) ||
-            storeRegistry.get(StoreConstructor) === null
-          ) {
-            storeRegistry.set(StoreConstructor, new StoreConstructor());
+    context.addInitializer(function (this: unknown) {
+      Object.defineProperty(this, context.name, {
+        get(this: object): unknown {
+          if (!cache.has(this)) {
+            if (
+              !storeRegistry.has(StoreConstructor) ||
+              storeRegistry.get(StoreConstructor) === null
+            ) {
+              storeRegistry.set(StoreConstructor, new StoreConstructor());
+            }
+            cache.set(this, storeRegistry.get(StoreConstructor));
           }
-          cache.set(this, storeRegistry.get(StoreConstructor));
-        }
-        return cache.get(this);
-      },
-      enumerable: true,
-      configurable: true,
+          return cache.get(this);
+        },
+        enumerable: true,
+        configurable: true,
+      });
     });
   };
 }
