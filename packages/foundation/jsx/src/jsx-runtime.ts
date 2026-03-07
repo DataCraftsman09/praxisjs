@@ -4,14 +4,17 @@ import {
   getCurrentScope,
 } from "@praxisjs/runtime";
 import type { Children } from "@praxisjs/shared";
-import { isComponent, type ComponentConstructor } from "@praxisjs/shared/internal";
+import {
+  isComponent,
+  type ComponentConstructor,
+} from "@praxisjs/shared/internal";
 
 export const Fragment = Symbol("Fragment");
 
 type PropsOf<T> = T extends string
   ? JSX.IntrinsicElements[T]
   : T extends ComponentConstructor<infer P>
-    ? P
+    ? { [K in keyof P]: Reactive<P[K]> }
     : Record<string, unknown>;
 
 type Reactive<T> = T | (() => T);
@@ -35,11 +38,7 @@ export function jsx<T extends string | ComponentConstructor | symbol>(
   }
 
   if (isComponent(type)) {
-    return mountComponent(
-      type,
-      props as Record<string, unknown>,
-      scope,
-    );
+    return mountComponent(type, props as Record<string, unknown>, scope);
   }
 
   return document.createComment("?");
@@ -68,7 +67,7 @@ export namespace JSX {
           ? never
           : I[K] extends (...args: unknown[]) => unknown
             ? never
-            : K]?: I[K];
+            : K]?: Reactive<I[K]>;
       }
     : never;
 

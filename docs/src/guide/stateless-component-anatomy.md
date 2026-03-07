@@ -85,8 +85,18 @@ const { name, role, onClick } = this.props;
 
 Props are resolved each time `render()` runs, so they always reflect the current parent values.
 
-::: tip
-Because there is no internal signal system, prop values are static snapshots at render time. If the parent passes a reactive prop (an arrow function), the runtime applies it as a scoped effect on the DOM node directly — no re-render of the component is needed.
+::: tip Static vs reactive props
+The parent can pass either a plain value or a getter to any prop:
+
+```tsx
+// static — evaluated once when the parent renders, never updates
+<Badge label={this.text} />
+
+// reactive — re-evaluated whenever this.text changes
+<Badge label={() => this.text} />
+```
+
+Because `StatelessComponent` has no internal signal system, `this.props.label` inside the component holds whatever the parent passed. When passing the value through to JSX children, the renderer handles functions reactively — no re-render of the component is needed.
 :::
 
 ---

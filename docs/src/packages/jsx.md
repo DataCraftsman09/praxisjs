@@ -74,15 +74,26 @@ All JSX expressions resolve to `Node | Node[]`.
 
 ### Reactive props
 
-Most attributes accept either a plain value or an arrow function. When an arrow function is provided, the runtime wraps it in a reactive effect and re-applies the value whenever its signal dependencies change.
+All HTML element attributes and component props accept either a plain value or an arrow function (getter). The behavior depends on how you pass the value:
+
+| Syntax | Behavior |
+| --- | --- |
+| `value={this.count}` | **Static** — evaluated once at mount, never updates |
+| `value={() => this.count}` | **Reactive** — re-evaluated whenever the signal changes |
+
+When a getter is provided, the runtime wraps it in a reactive effect and re-applies the value automatically.
 
 ```tsx
-// static — set once at mount
+// static — read once at mount, never updates
 <div class="box" />
+<Counter value={this.count} />
 
-// reactive — updates whenever theme() changes
+// reactive — updates whenever the signal changes
 <div class={() => theme()} />
+<Counter value={() => this.count} />
 ```
+
+This works for both HTML elements and class components. For `StatefulComponent`, the `@Prop()` decorator unwraps the getter transparently — `this.value` inside the component always returns the current value regardless of how the parent passed it.
 
 ### `JSX.IntrinsicElements`
 

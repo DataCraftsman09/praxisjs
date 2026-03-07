@@ -145,6 +145,16 @@ render() {
 }
 ```
 
+The parent can pass either a plain value or a getter. The `@Prop()` decorator unwraps getters transparently, so `this.propName` always returns the current value:
+
+```tsx
+// static — value is read once when the parent renders
+<UserCard userId={this.selectedId} />
+
+// reactive — userId updates whenever this.selectedId changes
+<UserCard userId={() => this.selectedId} />
+```
+
 ---
 
 ### 3. Local state — `@State()`
