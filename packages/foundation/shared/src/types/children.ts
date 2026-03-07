@@ -1,3 +1,5 @@
+import type { Computed, Signal } from "./signal";
+
 export type Primitive =
   | string
   | number
@@ -7,49 +9,37 @@ export type Primitive =
   | null
   | undefined;
 
-export type ReactiveChildren = () =>
+export type RenderedValue =
   | Primitive
-  | VNode
-  | VNode[]
+  | Signal<unknown>
+  | Computed<unknown>
+  | Node
+  | Node[];
+
+export type ReactiveChildren = () =>
+  | RenderedValue
+  | RenderedValue[]
   | ReactiveChildren[];
 
-export type ChildrenInternal =
-  | Primitive
-  | VNode
-  | ReactiveChildren
-  | ChildrenInternal[];
+export type Children = Primitive | Node | ReactiveChildren | Children[];
 
-export type Children = ChildrenInternal | ChildrenInternal[];
-
-export type Component = FunctionComponent | ComponentConstructor;
-
-export interface VNode {
-  type: string | Component;
-  props: Record<string, unknown>;
-  children: ChildrenInternal[];
-  key?: string | number;
-}
-
-export type FunctionComponent<P = Record<string, unknown>> = (
-  props: P & { children?: Children },
-) => VNode | null;
+export type Cleanup = () => void;
 
 export interface ComponentConstructor<P = Record<string, unknown>> {
   new (props: P): ComponentInstance;
-  isComponent: true;
+  __isComponent: true;
+  __isStateless: boolean;
+  name: string;
 }
+
+export type ComponentElement = new (...args: unknown[]) => ComponentInstance;
 
 export interface ComponentInstance {
   _mounted: boolean;
-  _stateDirty: boolean;
-  _lastResolvedProps?: Record<string, unknown>;
-  _isMemorized?: boolean;
-  _arePropsEqual?: (
-    prevProps: Record<string, unknown>,
-    nextProps: Record<string, unknown>,
-  ) => boolean;
+  _anchor?: Comment;
+  _stateDirty?: boolean;
   _setProps(p: Record<string, unknown>): void;
-  render(): VNode | null;
+  render(): Node | Node[] | null;
   onBeforeMount?(): void;
   onMount?(): void;
   onUnmount?(): void;

@@ -1,9 +1,4 @@
-import type { ChildrenInternal } from "./types/children";
-
-export const flattenChildren = (
-  children: ChildrenInternal | ChildrenInternal[],
-  out: ChildrenInternal[] = [],
-) => {
+export const flattenChildren = (children: unknown, out: unknown[] = []): unknown[] => {
   if (Array.isArray(children)) {
     for (const child of children) {
       flattenChildren(child, out);
