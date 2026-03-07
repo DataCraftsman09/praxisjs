@@ -1,4 +1,4 @@
-import { computed, signal } from "@praxisjs/core";
+import { computed, signal } from "@praxisjs/core/internal";
 import type { Signal, Computed } from "@praxisjs/shared";
 
 import { compilePath, parseQuery } from "./utils";
@@ -100,12 +100,10 @@ export class Router {
   private isLazy(
     c: RouteComponent | LazyRouteComponent,
   ): c is LazyRouteComponent {
-    return "__isLazy" in c && (c).__isLazy;
+    return "__isLazy" in c && c.__isLazy;
   }
 
-  private async resolveComponent(
-    path: string,
-  ): Promise<RouteComponent | null> {
+  private async resolveComponent(path: string): Promise<RouteComponent | null> {
     for (const route of this.compiled) {
       if (!route.regex.test(path)) continue;
       const { component } = route.definition;
@@ -189,7 +187,6 @@ export class Router {
 }
 
 let _router: Router | null = null;
-
 
 export function lazy(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

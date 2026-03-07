@@ -1,5 +1,6 @@
-import { computed } from "@praxisjs/core";
-import type { Children, VNode } from "@praxisjs/shared";
+import { StatelessComponent } from "@praxisjs/core";
+import { Component } from "@praxisjs/decorators";
+import type { Children } from "@praxisjs/shared";
 
 import { useRouter } from "../router";
 
@@ -11,35 +12,39 @@ interface LinkProps {
   children?: Children | Children[];
 }
 
-export function Link({
-  to,
-  replace = false,
-  class: cls = "",
-  activeClass = "active",
-  children,
-}: LinkProps): VNode {
-  const router = useRouter();
+@Component()
+export class Link extends StatelessComponent<LinkProps> {
+  render() {
+    const {
+      to,
+      replace = false,
+      class: cls = "",
+      activeClass = "active",
+      children,
+    } = this.props;
 
-  const isActive = computed(() => router.location().path === to);
+    const router = useRouter();
 
-  const handleClick = (e: MouseEvent) => {
-    e.preventDefault();
-    if (replace) {
-      void router.replace(to);
-    } else {
-      void router.push(to);
-    }
-  };
-
-  return (
-    <a
-      href={to}
-      class={() =>
-        [cls, isActive() ? activeClass : ""].filter(Boolean).join(" ")
+    const handleClick = (e: MouseEvent) => {
+      e.preventDefault();
+      if (replace) {
+        void router.replace(to);
+      } else {
+        void router.push(to);
       }
-      onClick={handleClick}
-    >
-      {children}
-    </a>
-  );
+    };
+
+    return (
+      <a
+        href={to}
+        class={() => {
+          const isActive = router.location().path === to;
+          return [cls, isActive ? activeClass : ""].filter(Boolean).join(" ");
+        }}
+        onClick={handleClick}
+      >
+        {children}
+      </a>
+    );
+  }
 }
