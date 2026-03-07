@@ -1,58 +1,62 @@
 import { container, type Container, Token, type Constructor, type InjectableOptions  } from "./container";
 
 export function Injectable(options: InjectableOptions = {}) {
-  return function <T extends Constructor>(target: T): T {
-    container.register(target, options);
-    return target;
+  return function (value: Constructor, _context: ClassDecoratorContext): void {
+    container.register(value, options);
   };
 }
 
 export function Inject<T>(dep: Constructor<T> | Token<T>) {
-  const cache = new WeakMap<object, T>();
+  return function (_value: undefined, context: ClassFieldDecoratorContext): void {
+    const cache = new WeakMap<object, T>();
+    const propertyKey = String(context.name);
 
-  return function (target: object, propertyKey: string): void {
-    Object.defineProperty(target, propertyKey, {
-      get(this: object): T {
-        if (!cache.has(this)) {
-          let resolved: T;
-          try {
-            resolved = container.resolve(dep as Constructor<T>);
-          } catch (err) {
-            throw new Error(
-              `[Inject] Failed to resolve "${
-                dep instanceof Token
-                  ? dep.toString()
-                  : (dep as Constructor).name
-              }" in "${(this as { constructor: { name: string } }).constructor.name}.${propertyKey}": ${(err as Error).message}`,
+    context.addInitializer(function (this: unknown) {
+      Object.defineProperty(this, context.name, {
+        get(this: object): T {
+          if (!cache.has(this)) {
+            let resolved: T;
+            try {
+              resolved = container.resolve(dep as Constructor<T>);
+            } catch (err) {
+              throw new Error(
+                `[Inject] Failed to resolve "${
+                  dep instanceof Token
+                    ? dep.toString()
+                    : (dep as Constructor).name
+                }" in "${(this as { constructor: { name: string } }).constructor.name}.${propertyKey}": ${(err as Error).message}`,
+              );
+            }
+            cache.set(this, resolved);
+          }
+          return cache.get(this) as T;
+        },
+
+        set(_value: unknown): void {
+          if (process.env.NODE_ENV !== "production") {
+            console.warn(
+              `[Inject] "${propertyKey}" is managed by the DI container and cannot be assigned directly.`,
             );
           }
-          cache.set(this, resolved);
-        }
-        return cache.get(this) as T;
-      },
+        },
 
-      set(_value: unknown): void {
-        if (process.env.NODE_ENV !== "production") {
-          console.warn(
-            `[Inject] "${propertyKey}" is managed by the DI container and cannot be assigned directly.`,
-          );
-        }
-      },
-
-      enumerable: true,
-      configurable: true,
+        enumerable: true,
+        configurable: true,
+      });
     });
   };
 }
 
 export function InjectContainer() {
-  return function (target: object, propertyKey: string): void {
-    Object.defineProperty(target, propertyKey, {
-      get() {
-        return container;
-      },
-      enumerable: true,
-      configurable: true,
+  return function (_value: undefined, context: ClassFieldDecoratorContext): void {
+    context.addInitializer(function (this: unknown) {
+      Object.defineProperty(this, context.name, {
+        get() {
+          return container;
+        },
+        enumerable: true,
+        configurable: true,
+      });
     });
   };
 }
