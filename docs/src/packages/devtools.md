@@ -28,10 +28,10 @@ Call `DevTools.init()` in your entry point before mounting the application. The 
 
 ```ts
 // main.ts
-import { DevTools } from '@praxisjs/devtools'
+import { DevTools } from "@praxisjs/devtools";
 
 if (import.meta.env.DEV) {
-  DevTools.init()
+  DevTools.init();
 }
 ```
 
@@ -50,13 +50,13 @@ Initialises the panel and renders it into the page. Calling `init()` more than o
 ```ts
 DevTools.init({
   plugins: [SignalsPlugin, ComponentsPlugin, TimelinePlugin],
-})
+});
 ```
 
 **Options:**
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
+| Option    | Type               | Default              | Description                          |
+| --------- | ------------------ | -------------------- | ------------------------------------ |
 | `plugins` | `DevtoolsPlugin[]` | All built-in plugins | Override which plugin tabs are shown |
 
 ### `DevTools.registerPlugin(plugin)`
@@ -64,7 +64,7 @@ DevTools.init({
 Adds a plugin at runtime after `init()` has already been called. If a plugin with the same `id` is already registered it is ignored.
 
 ```ts
-DevTools.registerPlugin(MyCustomPlugin)
+DevTools.registerPlugin(MyCustomPlugin);
 ```
 
 ### `DevTools.registry`
@@ -72,7 +72,7 @@ DevTools.registerPlugin(MyCustomPlugin)
 Returns the global `Registry` instance used to record signals, components, and timeline events. Useful for integrating custom plugins.
 
 ```ts
-const registry = DevTools.registry
+const registry = DevTools.registry;
 ```
 
 ---
@@ -95,14 +95,14 @@ Chronological log of all devtools events, capped at 200 entries. Each entry incl
 
 **Event types:**
 
-| Type | Triggered by |
-|------|-------------|
-| `signal:change` | A `@Debug()` signal value changes |
-| `component:render` | A `@Trace()` component re-renders |
-| `component:mount` | A `@Trace()` component's `onBeforeMount` fires |
-| `component:unmount` | A `@Trace()` component's `onUnmount` fires |
-| `lifecycle` | Any other lifecycle hook on a `@Trace()` component |
-| `method:call` | A `@Debug()` method is invoked |
+| Type                | Triggered by                                       |
+| ------------------- | -------------------------------------------------- |
+| `signal:change`     | A `@Debug()` signal value changes                  |
+| `component:render`  | A `@Trace()` component re-renders                  |
+| `component:mount`   | A `@Trace()` component's `onBeforeMount` fires     |
+| `component:unmount` | A `@Trace()` component's `onUnmount` fires         |
+| `lifecycle`         | Any other lifecycle hook on a `@Trace()` component |
+| `method:call`       | A `@Debug()` method is invoked                     |
 
 ---
 
@@ -118,7 +118,7 @@ import { Component } from '@praxisjs/decorators'
 
 @Trace()
 @Component()
-class Counter extends BaseComponent {
+class Counter extends StatefulComponent {
   render() {
     return <div>{() => this.count}</div>
   }
@@ -127,7 +127,7 @@ class Counter extends BaseComponent {
 
 `@Trace()` must be placed **above** `@Component()` so it wraps the already-decorated class.
 
-Hooks tracked: `onBeforeMount`, `onMount`, `onUnmount`, `onBeforeUpdate`, `onUpdate`, `onAfterUpdate`.
+Hooks tracked: `onBeforeMount`, `onMount`, `onUnmount`.
 
 ---
 
@@ -137,8 +137,8 @@ Property or method decorator. Tracks a `@State()` property, a `computed()` field
 
 **Options:**
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
+| Option  | Type     | Default                | Description                      |
+| ------- | -------- | ---------------------- | -------------------------------- |
 | `label` | `string` | Property / method name | Custom display name in the panel |
 
 #### On a `@State()` property
@@ -146,14 +146,15 @@ Property or method decorator. Tracks a `@State()` property, a `computed()` field
 Stack `@Debug()` above `@State()`:
 
 ```ts
-import { Debug } from '@praxisjs/devtools'
-import { State } from '@praxisjs/decorators'
+import { Debug } from "@praxisjs/devtools";
+import { State } from "@praxisjs/decorators";
 
 @Trace()
 @Component()
-class Counter extends BaseComponent {
+class Counter extends StatefulComponent {
   @Debug()
-  @State() count = 0
+  @State()
+  count = 0;
 }
 ```
 
@@ -162,16 +163,17 @@ Every time `count` changes, the new value is recorded in the Signals tab with a 
 #### On a `computed()` field
 
 ```ts
-import { computed } from '@praxisjs/core'
+import { computed } from "@praxisjs/core";
 
 @Trace()
 @Component()
-class Counter extends BaseComponent {
+class Counter extends StatefulComponent {
   @Debug()
-  @State() count = 0
+  @State()
+  count = 0;
 
-  @Debug({ label: 'doubled' })
-  doubled = computed(() => this.count * 2)
+  @Debug({ label: "doubled" })
+  doubled = computed(() => this.count * 2);
 }
 ```
 
@@ -180,10 +182,10 @@ class Counter extends BaseComponent {
 ```ts
 @Trace()
 @Component()
-class Counter extends BaseComponent {
+class Counter extends StatefulComponent {
   @Debug()
   increment() {
-    this.count++
+    this.count++;
   }
 }
 ```
@@ -220,12 +222,12 @@ DevTools.registerPlugin(MyPlugin)
 
 **`DevtoolsPlugin` interface:**
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | `string` | Unique identifier — used to prevent duplicate registration |
-| `label` | `string` | Tab label shown in the panel |
-| `setup` | `(registry: Registry) => void` | Optional. Called once on registration to subscribe to events |
-| `component` | `FunctionComponent<{ registry: Registry }>` | PraxisJS function component rendered inside the tab |
+| Field       | Type                                        | Description                                                  |
+| ----------- | ------------------------------------------- | ------------------------------------------------------------ |
+| `id`        | `string`                                    | Unique identifier — used to prevent duplicate registration   |
+| `label`     | `string`                                    | Tab label shown in the panel                                 |
+| `setup`     | `(registry: Registry) => void`              | Optional. Called once on registration to subscribe to events |
+| `component` | `FunctionComponent<{ registry: Registry }>` | PraxisJS function component rendered inside the tab          |
 
 ---
 
@@ -239,20 +241,20 @@ import type {
   HistoryEntry,
   LifecycleEvent,
   TimelineEventType,
-} from '@praxisjs/devtools'
+} from "@praxisjs/devtools";
 ```
 
 ### `SignalEntry`
 
 ```ts
 interface SignalEntry {
-  id: string
-  label: string
-  componentId: string
-  componentName: string
-  value: unknown
-  history: HistoryEntry[]   // last 20 values
-  changedAt: number
+  id: string;
+  label: string;
+  componentId: string;
+  componentName: string;
+  value: unknown;
+  history: HistoryEntry[]; // last 20 values
+  changedAt: number;
 }
 ```
 
@@ -260,8 +262,8 @@ interface SignalEntry {
 
 ```ts
 interface HistoryEntry {
-  value: unknown
-  timestamp: number
+  value: unknown;
+  timestamp: number;
 }
 ```
 
@@ -269,13 +271,13 @@ interface HistoryEntry {
 
 ```ts
 interface ComponentEntry {
-  id: string
-  name: string
-  renderCount: number
-  lastRenderDuration: number
-  mountedAt: number
-  status: 'mounted' | 'unmounted'
-  lifecycle: LifecycleEvent[]
+  id: string;
+  name: string;
+  renderCount: number;
+  lastRenderDuration: number;
+  mountedAt: number;
+  status: "mounted" | "unmounted";
+  lifecycle: LifecycleEvent[];
 }
 ```
 
@@ -283,8 +285,8 @@ interface ComponentEntry {
 
 ```ts
 interface LifecycleEvent {
-  hook: string
-  timestamp: number
+  hook: string;
+  timestamp: number;
 }
 ```
 
@@ -292,10 +294,10 @@ interface LifecycleEvent {
 
 ```ts
 interface TimelineEntry {
-  id: string
-  type: TimelineEventType
-  label: string
-  timestamp: number
-  data: Record<string, unknown>
+  id: string;
+  type: TimelineEventType;
+  label: string;
+  timestamp: number;
+  data: Record<string, unknown>;
 }
 ```

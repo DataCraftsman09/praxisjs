@@ -17,10 +17,10 @@ export default defineConfig({
       { text: "Guide", link: "/guide/getting-started" },
       { text: "Reference", link: "/packages/core" },
       {
-        text: "v0.1.0 beta",
+        text: "v0.3.0 beta",
         items: [
           {
-            text: "v0.1.0 beta",
+            text: "v0.3.0 beta",
             link: "/project-status",
           },
         ],
@@ -37,10 +37,13 @@ export default defineConfig({
             text: "Component Anatomy",
             collapsed: false,
             items: [
-              { text: "Class Component", link: "/guide/component-anatomy" },
               {
-                text: "Function Component",
-                link: "/guide/function-component-anatomy",
+                text: "Stateful Component",
+                link: "/guide/stateful-component-anatomy",
+              },
+              {
+                text: "Stateless Component",
+                link: "/guide/stateless-component-anatomy",
               },
             ],
           },

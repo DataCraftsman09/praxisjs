@@ -1,6 +1,6 @@
-# Component Anatomy
+# Stateful Component Anatomy
 
-A PraxisJS component is a TypeScript class that extends `BaseComponent`. This guide walks through each part of a component and how they connect.
+A stateful PraxisJS component is a TypeScript class that extends `StatefulComponent`. It uses decorators to declare props, reactive state, watchers, slots, and events. This guide walks through each part and how they connect.
 
 ## Overview
 
@@ -16,10 +16,10 @@ import {
   Command,
   createCommand,
 } from "@praxisjs/decorators";
-import { BaseComponent, resource } from "@praxisjs/core";
+import { StatefulComponent, resource } from "@praxisjs/core";
 
 @Component()
-class UserCard extends BaseComponent {
+class UserCard extends StatefulComponent {
   // ── Props ──────────────────────────────────────────────────────────────
   @Prop() userId!: number;
   @Prop() elevated = false;
@@ -29,12 +29,6 @@ class UserCard extends BaseComponent {
   // ── Local state ─────────────────────────────────────────────────────────
   @State() editing = false;
   @State() name = "";
-
-  // ── Async data ──────────────────────────────────────────────────────────
-  user = resource(async () => {
-    const res = await fetch(`/api/users/${this.userId}`);
-    return res.json() as Promise<User>;
-  });
 
   // ── Watchers ─────────────────────────────────────────────────────────────
   @Watch("editing")
@@ -77,32 +71,36 @@ class UserCard extends BaseComponent {
     return (
       <div class={() => `card ${this.elevated ? "elevated" : ""}`}>
         <header>
-          {() => this.editing ? (
-            <input
-              value={() => this.name}
-              onInput={(e) => {
-                this.name = (e.target as HTMLInputElement).value;
-              }}
-            />
-          ) : (
-            <h2>{() => data()?.name}</h2>
-          )}
+          {() =>
+            this.editing ? (
+              <input
+                value={() => this.name}
+                onInput={(e) => {
+                  this.name = (e.target as HTMLInputElement).value;
+                }}
+              />
+            ) : (
+              <h2>{() => data()?.name}</h2>
+            )
+          }
         </header>
 
         <main>{this.default}</main>
 
         <footer>
-          {() => this.editing ? (
-            <button onClick={() => this.save()}>Save</button>
-          ) : (
-            <button
-              onClick={() => {
-                this.editing = true;
-              }}
-            >
-              Edit
-            </button>
-          )}
+          {() =>
+            this.editing ? (
+              <button onClick={() => this.save()}>Save</button>
+            ) : (
+              <button
+                onClick={() => {
+                  this.editing = true;
+                }}
+              >
+                Edit
+              </button>
+            )
+          }
           {this.actions}
         </footer>
       </div>
@@ -121,10 +119,10 @@ Registers the class as a component and defines metadata.
 
 ```ts
 @Component()
-class UserCard extends BaseComponent {}
+class UserCard extends StatefulComponent {}
 ```
 
-- Every component class extends `BaseComponent`
+- Every component class extends `StatefulComponent`
 
 ---
 
@@ -161,8 +159,8 @@ Internal component state. Each `@State` property is backed by a signal.
 Direct read and write:
 
 ```ts
-this.editing       // reads current value
-this.editing = true  // updates the signal
+this.editing; // reads current value
+this.editing = true; // updates the signal
 ```
 
 #### Reactivity in templates
@@ -171,10 +169,14 @@ PraxisJS uses **fine-grained reactivity** — only the exact DOM nodes that depe
 
 ```tsx
 // ✗ static — evaluated once at render time, never updates
-{this.count}
+{
+  this.count;
+}
 
 // ✓ reactive — the renderer wraps this in its own effect
-{() => this.count}
+{
+  () => this.count;
+}
 ```
 
 The same rule applies to attributes, class names, and conditional content:
@@ -189,10 +191,14 @@ The same rule applies to attributes, class names, and conditional content:
 
 ```tsx
 // ✗ static — condition evaluated once, never re-evaluated
-{this.editing ? <input /> : <span>{this.name}</span>}
+{
+  this.editing ? <input /> : <span>{this.name}</span>;
+}
 
 // ✓ reactive — whole branch is re-evaluated when editing changes
-{() => this.editing ? <input /> : <span>{() => this.name}</span>}
+{
+  () => (this.editing ? <input /> : <span>{() => this.name}</span>);
+}
 ```
 
 ::: tip Why arrow functions?
@@ -217,11 +223,13 @@ user = resource(async () => {
 In the template:
 
 ```tsx
-{() => {
-  if (this.user.pending()) return <Spinner />;
-  if (this.user.error()) return <Error />;
-  return <h2>{() => this.user.data()?.name}</h2>;
-}}
+{
+  () => {
+    if (this.user.pending()) return <Spinner />;
+    if (this.user.error()) return <Error />;
+    return <h2>{() => this.user.data()?.name}</h2>;
+  };
+}
 ```
 
 Manual actions:
@@ -327,15 +335,12 @@ In the parent:
 
 Override lifecycle methods directly on the class.
 
-| Method                 | When it runs                                   |
-| ---------------------- | ---------------------------------------------- |
-| `onBeforeMount()`      | Before first render                            |
-| `onMount()`            | After first DOM insertion                      |
-| `onBeforeUpdate(prev)` | Before props are applied (synchronous)         |
-| `onUpdate(prev)`       | After props are applied, before DOM commit     |
-| `onAfterUpdate(prev)`  | After DOM update (async, via `queueMicrotask`) |
-| `onUnmount()`          | When removed from DOM                          |
-| `onError(err)`         | On uncaught error inside the component         |
+| Method            | When it runs                    |
+| ----------------- | ------------------------------- |
+| `onBeforeMount()` | Before first render             |
+| `onMount()`       | After first DOM insertion       |
+| `onUnmount()`     | When removed from DOM           |
+| `onError(err)`    | On uncaught error inside the component |
 
 ```ts
 onMount() {
@@ -351,7 +356,7 @@ onUnmount() {
 
 ### 10. Render
 
-The only required method. Must return a `VNode` or `null`. It runs **once** on mount — state changes update only the specific DOM nodes bound with arrow functions, not the whole component.
+The only required method. Must return a `Node | Node[]` or `null`. It runs **once** on mount — state changes update only the specific DOM nodes bound with arrow functions, not the whole component.
 
 ```tsx
 render() {
@@ -403,7 +408,7 @@ import { createRef, useElementSize } from "@praxisjs/composables";
 import { tween } from "@praxisjs/motion";
 
 @Component()
-class AnimatedPanel extends BaseComponent {
+class AnimatedPanel extends StatefulComponent {
   ref = createRef();
   size = useElementSize(this.ref);
   opacity = tween(0, 1, { duration: 400 });

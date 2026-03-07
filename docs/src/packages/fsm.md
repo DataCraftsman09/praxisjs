@@ -27,40 +27,40 @@ Finite state machine implementation with reactive state tracking and TypeScript-
 Creates a state machine from a definition object. State and history are exposed as signals/computed values.
 
 ```ts
-import { createMachine } from '@praxisjs/fsm'
+import { createMachine } from "@praxisjs/fsm";
 
-type State = 'idle' | 'loading' | 'success' | 'error'
-type Event = 'FETCH' | 'RESOLVE' | 'REJECT' | 'RESET'
+type State = "idle" | "loading" | "success" | "error";
+type Event = "FETCH" | "RESOLVE" | "REJECT" | "RESET";
 
 const machine = createMachine<State, Event>({
-  initial: 'idle',
+  initial: "idle",
   states: {
     idle: {
-      on: { FETCH: 'loading' },
+      on: { FETCH: "loading" },
     },
     loading: {
       on: {
-        RESOLVE: 'success',
-        REJECT: 'error',
+        RESOLVE: "success",
+        REJECT: "error",
       },
       onEnter() {
-        console.log('started loading')
+        console.log("started loading");
       },
       onExit() {
-        console.log('loading finished')
+        console.log("loading finished");
       },
     },
     success: {
-      on: { RESET: 'idle' },
+      on: { RESET: "idle" },
     },
     error: {
-      on: { RESET: 'idle', FETCH: 'loading' },
+      on: { RESET: "idle", FETCH: "loading" },
     },
   },
   onTransition(from, event, to) {
-    console.log(`${from} → ${event} → ${to}`)
+    console.log(`${from} → ${event} → ${to}`);
   },
-})
+});
 ```
 
 ## Machine API
@@ -68,16 +68,16 @@ const machine = createMachine<State, Event>({
 ### Reading state
 
 ```ts
-machine.state()          // 'idle' (Computed)
-machine.history()        // [{ from, event, to }]
-machine.is('loading')    // true/false
-machine.can('FETCH')     // true if 'FETCH' is valid in current state
+machine.state(); // 'idle' (Computed)
+machine.history(); // [{ from, event, to }]
+machine.is("loading"); // true/false
+machine.can("FETCH"); // true if 'FETCH' is valid in current state
 ```
 
 ### Sending events
 
 ```ts
-const transitioned = machine.send('FETCH')  // returns boolean
+const transitioned = machine.send("FETCH"); // returns boolean
 ```
 
 Returns `true` if the transition succeeded, `false` if the event is not valid in the current state.
@@ -85,25 +85,25 @@ Returns `true` if the transition succeeded, `false` if the event is not valid in
 ### Reset
 
 ```ts
-machine.reset()  // returns to initial state, clears history
+machine.reset(); // returns to initial state, clears history
 ```
 
 ## Machine Definition
 
 ```ts
 type MachineDefinition<S extends string, E extends string> = {
-  initial: S
-  states: StateMap<S, E>
-  onTransition?: (from: S, event: E, to: S) => void
-}
+  initial: S;
+  states: StateMap<S, E>;
+  onTransition?: (from: S, event: E, to: S) => void;
+};
 
 type StateMap<S extends string, E extends string> = {
   [state in S]: {
-    on?: Partial<Record<E, S>>
-    onEnter?: () => void
-    onExit?: () => void
-  }
-}
+    on?: Partial<Record<E, S>>;
+    onEnter?: () => void;
+    onExit?: () => void;
+  };
+};
 ```
 
 `onEnter` and `onExit` are called synchronously during the transition.
@@ -112,7 +112,7 @@ type StateMap<S extends string, E extends string> = {
 
 ```ts
 @Component()
-class FetchButton extends BaseComponent {
+class FetchButton extends StatefulComponent {
   machine = createMachine<State, Event>({ /* ... */ })
 
   async fetch() {
@@ -143,15 +143,24 @@ class FetchButton extends BaseComponent {
 Declarative FSM integration for class components.
 
 ```ts
-import { StateMachine, Transition } from '@praxisjs/fsm'
+import { StateMachine, Transition } from "@praxisjs/fsm";
 
-@StateMachine({ initial: 'idle', states: { /* ... */ } })
+@StateMachine({
+  initial: "idle",
+  states: {
+    /* ... */
+  },
+})
 @Component()
-class VideoPlayer extends BaseComponent {
-  @Transition('PLAY')
-  play() { /* called when PLAY transition succeeds */ }
+class VideoPlayer extends StatefulComponent {
+  @Transition("PLAY")
+  play() {
+    /* called when PLAY transition succeeds */
+  }
 
-  @Transition('PAUSE')
-  pause() { /* called when PAUSE transition succeeds */ }
+  @Transition("PAUSE")
+  pause() {
+    /* called when PAUSE transition succeeds */
+  }
 }
 ```

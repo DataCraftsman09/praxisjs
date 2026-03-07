@@ -26,12 +26,12 @@ Vite plugin that configures the build for PraxisJS: decorator support, JSX trans
 
 ```ts
 // vite.config.ts
-import { defineConfig } from 'vite'
-import { praxisjs } from '@praxisjs/vite-plugin'
+import { defineConfig } from "vite";
+import { praxisjs } from "@praxisjs/vite-plugin";
 
 export default defineConfig({
   plugins: [praxisjs()],
-})
+});
 ```
 
 ## `praxisjs(options?)`
@@ -42,14 +42,14 @@ Returns an array of Vite plugins. Pass the result directly to the `plugins` arra
 praxisjs({
   hmr: true,
   autoImport: true,
-})
+});
 ```
 
 **Options:**
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `hmr` | `boolean` | `false` | Enable Hot Module Replacement for components |
+| Option       | Type      | Default | Description                                                   |
+| ------------ | --------- | ------- | ------------------------------------------------------------- |
+| `hmr`        | `boolean` | `false` | Enable Hot Module Replacement for components                  |
 | `autoImport` | `boolean` | `false` | Auto-import the JSX runtime (removes need for manual imports) |
 
 ---
@@ -73,12 +73,9 @@ When `hmr: true`, watches component files for changes and sends `praxisjs:compon
 {
   "compilerOptions": {
     "target": "ES2022",
-    "experimentalDecorators": true,
-    "useDefineForClassFields": false,
+    "useDefineForClassFields": true,
     "jsx": "react-jsx",
     "jsxImportSource": "@praxisjs/jsx"
   }
 }
 ```
-
-`useDefineForClassFields: false` is required for decorators like `@State` and `@Prop` to intercept property definitions correctly.

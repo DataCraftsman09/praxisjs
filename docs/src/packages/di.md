@@ -25,26 +25,26 @@ Dependency injection container with TypeScript decorators, token-based resolutio
 ## Basic Usage
 
 ```ts
-import { Injectable, Inject, container } from '@praxisjs/di'
+import { Injectable, Inject, container } from "@praxisjs/di";
 
 @Injectable()
 class LoggerService {
   log(msg: string) {
-    console.log('[LOG]', msg)
+    console.log("[LOG]", msg);
   }
 }
 
 @Injectable()
 class UserService {
-  @Inject(LoggerService) private logger!: LoggerService
+  @Inject(LoggerService) private logger!: LoggerService;
 
   greet(name: string) {
-    this.logger.log(`Hello, ${name}`)
+    this.logger.log(`Hello, ${name}`);
   }
 }
 
-const userService = container.resolve(UserService)
-userService.greet('Alice')
+const userService = container.resolve(UserService);
+userService.greet("Alice");
 ```
 
 ---
@@ -54,17 +54,21 @@ userService.greet('Alice')
 Registers a class in the global container.
 
 ```ts
-@Injectable({ scope: 'singleton' })
-class CacheService { /* ... */ }
+@Injectable({ scope: "singleton" })
+class CacheService {
+  /* ... */
+}
 
-@Injectable({ scope: 'transient' })
-class RequestContext { /* ... */ }
+@Injectable({ scope: "transient" })
+class RequestContext {
+  /* ... */
+}
 ```
 
 **Options:**
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
+| Option  | Type                         | Default       | Description                                                                |
+| ------- | ---------------------------- | ------------- | -------------------------------------------------------------------------- |
 | `scope` | `'singleton' \| 'transient'` | `'singleton'` | Singleton shares one instance; transient creates a new one on each resolve |
 
 ---
@@ -76,11 +80,11 @@ Lazily injects a dependency into a class property. Resolves and caches on first 
 ```ts
 @Injectable()
 class ApiClient {
-  @Inject(AuthService) private auth!: AuthService
-  @Inject(HTTP_CLIENT) private http!: HttpClient  // token injection
+  @Inject(AuthService) private auth!: AuthService;
+  @Inject(HTTP_CLIENT) private http!: HttpClient; // token injection
 
   async get(path: string) {
-    return this.http.get(path, { token: this.auth.token })
+    return this.http.get(path, { token: this.auth.token });
   }
 }
 ```
@@ -96,10 +100,10 @@ Injects the DI container itself. Useful for dynamic resolution.
 ```ts
 @Injectable()
 class ServiceLocator {
-  @InjectContainer() private container!: Container
+  @InjectContainer() private container!: Container;
 
   resolve<T>(type: Constructor<T>): T {
-    return this.container.resolve(type)
+    return this.container.resolve(type);
   }
 }
 ```
@@ -115,17 +119,17 @@ Use tokens for injecting values that aren't classes (primitives, config objects,
 Creates a typed injection token.
 
 ```ts
-import { token } from '@praxisjs/di'
+import { token } from "@praxisjs/di";
 
-const API_URL = token<string>('API_URL')
-const HTTP_OPTIONS = token<HttpOptions>('HTTP_OPTIONS')
+const API_URL = token<string>("API_URL");
+const HTTP_OPTIONS = token<HttpOptions>("HTTP_OPTIONS");
 ```
 
 ### Registering token values
 
 ```ts
-container.registerValue(API_URL, 'https://api.example.com')
-container.registerValue(HTTP_OPTIONS, { timeout: 5000 })
+container.registerValue(API_URL, "https://api.example.com");
+container.registerValue(HTTP_OPTIONS, { timeout: 5000 });
 ```
 
 ### Injecting tokens
@@ -133,7 +137,7 @@ container.registerValue(HTTP_OPTIONS, { timeout: 5000 })
 ```ts
 @Injectable()
 class ApiService {
-  @Inject(API_URL) private baseUrl!: string
+  @Inject(API_URL) private baseUrl!: string;
 }
 ```
 
@@ -148,7 +152,7 @@ The global `container` instance is available as a named export. You can also cre
 Manually register a class.
 
 ```ts
-container.register(MyService, { scope: 'transient' })
+container.register(MyService, { scope: "transient" });
 ```
 
 ### `container.registerValue(token, value)`
@@ -156,7 +160,7 @@ container.register(MyService, { scope: 'transient' })
 Register a plain value.
 
 ```ts
-container.registerValue(API_URL, 'https://api.example.com')
+container.registerValue(API_URL, "https://api.example.com");
 ```
 
 ### `container.registerFactory(token, factory)`
@@ -165,9 +169,9 @@ Register a factory function that receives the container and returns the value.
 
 ```ts
 container.registerFactory(LOGGER, (c) => {
-  const config = c.resolve(AppConfig)
-  return config.debug ? new DebugLogger() : new SilentLogger()
-})
+  const config = c.resolve(AppConfig);
+  return config.debug ? new DebugLogger() : new SilentLogger();
+});
 ```
 
 ### `container.resolve(target)`
@@ -175,8 +179,8 @@ container.registerFactory(LOGGER, (c) => {
 Resolves a class or token from the container.
 
 ```ts
-const service = container.resolve(UserService)
-const url = container.resolve(API_URL)
+const service = container.resolve(UserService);
+const url = container.resolve(API_URL);
 ```
 
 ### `container.createChild()`
@@ -184,8 +188,8 @@ const url = container.resolve(API_URL)
 Creates a child container that inherits all registrations from its parent but has its own scope for new registrations.
 
 ```ts
-const requestScope = container.createChild()
-requestScope.registerValue(REQUEST_ID, generateId())
+const requestScope = container.createChild();
+requestScope.registerValue(REQUEST_ID, generateId());
 ```
 
 ---
@@ -195,11 +199,11 @@ requestScope.registerValue(REQUEST_ID, generateId())
 Shorthand for creating a scoped child container. Useful for request-level or component-level isolation.
 
 ```ts
-import { createScope } from '@praxisjs/di'
+import { createScope } from "@praxisjs/di";
 
-const scope = createScope()
-scope.registerValue(SESSION, session)
-const handler = scope.resolve(RequestHandler)
+const scope = createScope();
+scope.registerValue(SESSION, session);
+const handler = scope.resolve(RequestHandler);
 ```
 
 ---
@@ -212,7 +216,7 @@ Composable to resolve a service from the global container inside a component.
 import { useService } from '@praxisjs/di'
 
 @Component()
-class Dashboard extends BaseComponent {
+class Dashboard extends StatefulComponent {
   analytics = useService(AnalyticsService)
 
   render() {

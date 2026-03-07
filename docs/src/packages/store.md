@@ -27,60 +27,60 @@ Simple reactive state management. Stores are plain objects whose state propertie
 Creates a store from an object that mixes state and methods. Returns a factory function that returns the reactive proxy.
 
 ```ts
-import { createStore } from '@praxisjs/store'
+import { createStore } from "@praxisjs/store";
 
 const useCounter = createStore({
   count: 0,
   step: 1,
 
   increment() {
-    this.count += this.step
+    this.count += this.step;
   },
   decrement() {
-    this.count -= this.step
+    this.count -= this.step;
   },
   reset() {
-    this.count = 0
+    this.count = 0;
   },
-})
+});
 
-const counter = useCounter()
+const counter = useCounter();
 
-counter.count        // 0
-counter.increment()
-counter.count        // 1
+counter.count; // 0
+counter.increment();
+counter.count; // 1
 ```
 
 ### Proxy interface
 
-| Member | Description |
-|--------|-------------|
-| State properties | Return current value; setting triggers reactivity |
-| Methods | Available directly, `this` bound to state |
-| `$state` | Raw state snapshot object |
-| `$patch(partial)` | Merge a partial object into state |
-| `$reset()` | Restore all state to initial values |
-| `$subscribe(fn)` | Subscribe to any state change |
+| Member            | Description                                       |
+| ----------------- | ------------------------------------------------- |
+| State properties  | Return current value; setting triggers reactivity |
+| Methods           | Available directly, `this` bound to state         |
+| `$state`          | Raw state snapshot object                         |
+| `$patch(partial)` | Merge a partial object into state                 |
+| `$reset()`        | Restore all state to initial values               |
+| `$subscribe(fn)`  | Subscribe to any state change                     |
 
 ### `$patch`
 
 ```ts
-counter.$patch({ count: 10, step: 2 })
+counter.$patch({ count: 10, step: 2 });
 ```
 
 ### `$reset`
 
 ```ts
-counter.$reset()
-counter.count  // 0
+counter.$reset();
+counter.count; // 0
 ```
 
 ### `$subscribe`
 
 ```ts
 const unsub = counter.$subscribe((state) => {
-  console.log('new count:', state.count)
-})
+  console.log("new count:", state.count);
+});
 ```
 
 ---
@@ -94,22 +94,22 @@ Use `@Store` and `@UseStore` for singleton stores accessed across components.
 Registers the class as a singleton store in the global registry.
 
 ```ts
-import { Store } from '@praxisjs/store'
-import { State } from '@praxisjs/decorators'
+import { Store } from "@praxisjs/store";
+import { State } from "@praxisjs/decorators";
 
 @Store()
 class AuthStore {
-  @State() user: User | null = null
-  @State() token: string | null = null
+  @State() user: User | null = null;
+  @State() token: string | null = null;
 
   login(user: User, token: string) {
-    this.user = user
-    this.token = token
+    this.user = user;
+    this.token = token;
   }
 
   logout() {
-    this.user = null
-    this.token = null
+    this.user = null;
+    this.token = null;
   }
 }
 ```
@@ -121,10 +121,10 @@ Lazily injects the singleton store instance into a component property.
 ```ts
 import { UseStore } from '@praxisjs/store'
 import { Component } from '@praxisjs/decorators'
-import { BaseComponent } from '@praxisjs/core'
+import { StatefulComponent } from '@praxisjs/core'
 
 @Component()
-class Header extends BaseComponent {
+class Header extends StatefulComponent {
   @UseStore(AuthStore) auth!: AuthStore
 
   render() {

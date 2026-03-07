@@ -69,35 +69,37 @@ const router = createRouter(routes);
 
 Routes accept three kinds of components:
 
-| Kind              | Example                                        |
-| ----------------- | ---------------------------------------------- |
-| Class component   | `component: MyPage`                            |
-| Function component | `component: () => <MyPage />`                 |
-| Lazy (code-split) | `component: lazy(() => import('./MyPage'))`    |
+| Kind               | Example                                     |
+| ------------------ | ------------------------------------------- |
+| Class component    | `component: MyPage`                         |
+| Function component | `component: () => <MyPage />`               |
+| Lazy (code-split)  | `component: lazy(() => import('./MyPage'))` |
 
 ## Lazy Loading
 
 Use the `lazy()` helper to code-split routes. The component is fetched on demand and cached after the first load.
 
 ```ts
-import { createRouter, lazy } from '@praxisjs/router'
+import { createRouter, lazy } from "@praxisjs/router";
 
 createRouter([
   // Eager – imported at startup
-  { path: '/', component: Home },
+  { path: "/", component: Home },
 
   // Lazy – loaded only when the route is first visited
-  { path: '/settings', component: lazy(() => import('./pages/Settings')) },
-])
+  { path: "/settings", component: lazy(() => import("./pages/Settings")) },
+]);
 ```
 
 While a lazy component is loading, `router.loading()` returns `true`, which you can use to show a loading indicator.
 
 ```tsx
-const router = useRouter()
+const router = useRouter();
 
 // in a render function
-{() => router.loading() ? <Spinner /> : null}
+{
+  () => (router.loading() ? <Spinner /> : null);
+}
 ```
 
 ## `Router`
@@ -115,11 +117,11 @@ const router = useRouter()
 ### Methods
 
 ```ts
-await router.push("/users/42");  // navigate, add to history
-await router.replace("/login");  // navigate, replace current entry
-router.back();                   // go back
-router.forward();                // go forward
-router.go(-2);                   // go N steps in history
+await router.push("/users/42"); // navigate, add to history
+await router.replace("/login"); // navigate, replace current entry
+router.back(); // go back
+router.forward(); // go forward
+router.go(-2); // go N steps in history
 ```
 
 `push` and `replace` return `Promise<void>` and resolve after the component is ready. If `beforeEnter` returns `false` the navigation is aborted; if it returns a string the router redirects to that path instead.
@@ -130,15 +132,18 @@ router.go(-2);                   // go N steps in history
 type RouteLocation = {
   path: string;
   params: RouteParams; // { id: '42' }
-  query: RouteQuery;   // { page: '2' }
-  hash: string;        // 'section'
+  query: RouteQuery; // { page: '2' }
+  hash: string; // 'section'
 };
 
 // class or function component
 type RouteComponent = (new (...args: any[]) => any) | ((...args: any[]) => any);
 
 // created with lazy() — loaded on demand, cached after first load
-type LazyRouteComponent = { (): Promise<{ default: new (...args: any[]) => any }>; __isLazy: true };
+type LazyRouteComponent = {
+  (): Promise<{ default: new (...args: any[]) => any }>;
+  __isLazy: true;
+};
 
 type RouteDefinition = {
   path: string;
@@ -212,7 +217,7 @@ import { Route } from '@praxisjs/router'
 
 @Route('/about')
 @Component()
-class AboutPage extends BaseComponent {
+class AboutPage extends StatefulComponent {
   render() { return <main>About</main> }
 }
 ```

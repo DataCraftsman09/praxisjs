@@ -40,42 +40,29 @@ With this configuration, TypeScript automatically imports `jsx` and `jsxs` from 
 
 ## Runtime Functions
 
-These are used by the TypeScript/Babel JSX transform and generally not called directly.
+These are used by the TypeScript JSX transform and generally not called directly.
 
-### `jsx(type, props, key?)`
+### `jsx(type, props)`
 
-Creates a virtual node. Called for single-child elements.
+Mounts a DOM element or class component and returns the resulting `Node | Node[]`. Called by the JSX transform for single-child elements.
 
-```ts
-import { jsx } from "@praxisjs/jsx";
+### `jsxs(type, props)`
 
-jsx("div", { class: "box", children: "Hello" });
-```
-
-### `jsxs(type, props, key?)`
-
-Alias for `jsx`, called for elements with multiple children.
+Alias of `jsx`, called for elements with multiple children.
 
 ### `Fragment`
 
 Symbol for grouping elements without a DOM wrapper.
 
 ```tsx
-import { Fragment } from '@praxisjs/jsx'
-
-// JSX shorthand:
 <>
   <p>First</p>
   <p>Second</p>
 </>
 
-// Desugars to:
+// desugars to:
 jsx(Fragment, { children: [...] })
 ```
-
----
-
-> **VNode, Children, FunctionComponent, ComponentConstructor** — these types are defined in [@praxisjs/shared](./shared) and re-used by the JSX runtime.
 
 ---
 
@@ -83,65 +70,115 @@ jsx(Fragment, { children: [...] })
 
 ### `JSX.Element`
 
-All JSX expressions resolve to `VNode`.
+All JSX expressions resolve to `Node | Node[]`.
+
+### Reactive props
+
+Most attributes accept either a plain value or an arrow function. When an arrow function is provided, the runtime wraps it in a reactive effect and re-applies the value whenever its signal dependencies change.
+
+```tsx
+// static — set once at mount
+<div class="box" />
+
+// reactive — updates whenever theme() changes
+<div class={() => theme()} />
+```
 
 ### `JSX.IntrinsicElements`
 
-Full type coverage for HTML elements. All support:
+Full type coverage for HTML elements. All elements share the base `HTMLAttributes` interface.
 
 **Universal attributes:**
 
-| Attribute             | Type                               |
-| --------------------- | ---------------------------------- |
-| `id`                  | `string`                           |
-| `class` / `className` | `string`                           |
-| `style`               | `string \| Record<string, string>` |
-| `key`                 | `string \| number`                 |
-| `ref`                 | `{ current: T \| null }`           |
-| `tabIndex`            | `number`                           |
-| `title`               | `string`                           |
-| `hidden`              | `boolean`                          |
-| `draggable`           | `boolean`                          |
+| Attribute             | Type                                        |
+| --------------------- | ------------------------------------------- |
+| `id`                  | `Reactive<string>`                          |
+| `class` / `className` | `Reactive<string>`                          |
+| `style`               | `Reactive<string \| CSSStyleDeclaration>`   |
+| `key`                 | `string \| number`                          |
+| `ref`                 | `(el: HTMLElement) => void`                 |
+| `tabIndex`            | `Reactive<number>`                          |
+| `title`               | `Reactive<string>`                          |
+| `hidden`              | `Reactive<boolean>`                         |
+| `draggable`           | `Reactive<boolean>`                         |
+| `role`                | `Reactive<string>`                          |
 
-**Accessibility:**
+**Accessibility (`aria-*`):**
 
-| Attribute       | Type      |
-| --------------- | --------- |
-| `role`          | `string`  |
-| `aria-label`    | `string`  |
-| `aria-hidden`   | `boolean` |
-| `aria-expanded` | `boolean` |
-| `aria-checked`  | `boolean` |
+| Attribute          | Type                                         |
+| ------------------ | -------------------------------------------- |
+| `aria-label`       | `Reactive<string>`                           |
+| `aria-hidden`      | `Reactive<boolean \| "true" \| "false">`     |
+| `aria-expanded`    | `Reactive<boolean \| "true" \| "false">`     |
+| `aria-checked`     | `Reactive<boolean \| "true" \| "false" \| "mixed">` |
+| `aria-disabled`    | `Reactive<boolean \| "true" \| "false">`     |
+| `aria-selected`    | `Reactive<boolean \| "true" \| "false">`     |
+| `aria-controls`    | `Reactive<string>`                           |
+| `aria-describedby` | `Reactive<string>`                           |
+| `aria-labelledby`  | `Reactive<string>`                           |
 
 **Event handlers:**
 
-| Handler       | Event           |
-| ------------- | --------------- |
-| `onClick`     | `MouseEvent`    |
-| `onInput`     | `InputEvent`    |
-| `onChange`    | `Event`         |
-| `onSubmit`    | `SubmitEvent`   |
-| `onKeyDown`   | `KeyboardEvent` |
-| `onKeyUp`     | `KeyboardEvent` |
-| `onFocus`     | `FocusEvent`    |
-| `onBlur`      | `FocusEvent`    |
-| `onMouseDown` | `MouseEvent`    |
-| `onMouseUp`   | `MouseEvent`    |
-| `onMouseMove` | `MouseEvent`    |
-| `onScroll`    | `Event`         |
+| Handler            | Event           |
+| ------------------ | --------------- |
+| `onClick`          | `MouseEvent`    |
+| `onDblClick`       | `MouseEvent`    |
+| `onMouseDown`      | `MouseEvent`    |
+| `onMouseUp`        | `MouseEvent`    |
+| `onMouseEnter`     | `MouseEvent`    |
+| `onMouseLeave`     | `MouseEvent`    |
+| `onMouseMove`      | `MouseEvent`    |
+| `onContextMenu`    | `MouseEvent`    |
+| `onKeyDown`        | `KeyboardEvent` |
+| `onKeyUp`          | `KeyboardEvent` |
+| `onKeyPress`       | `KeyboardEvent` |
+| `onFocus`          | `FocusEvent`    |
+| `onBlur`           | `FocusEvent`    |
+| `onChange`         | `Event`         |
+| `onInput`          | `InputEvent`    |
+| `onSubmit`         | `SubmitEvent`   |
+| `onReset`          | `Event`         |
+| `onDragStart`      | `DragEvent`     |
+| `onDragEnd`        | `DragEvent`     |
+| `onDragOver`       | `DragEvent`     |
+| `onDrop`           | `DragEvent`     |
+| `onTouchStart`     | `TouchEvent`    |
+| `onTouchEnd`       | `TouchEvent`    |
+| `onTouchMove`      | `TouchEvent`    |
+| `onScroll`         | `Event`         |
+| `onWheel`          | `WheelEvent`    |
+| `onAnimationEnd`   | `AnimationEvent`   |
+| `onTransitionEnd`  | `TransitionEvent`  |
+
+**Element-specific attributes:**
+
+| Element      | Extra props                                                               |
+| ------------ | ------------------------------------------------------------------------- |
+| `button`     | `type`, `disabled`, `form`, `name`, `value`                               |
+| `input`      | `type`, `value`, `placeholder`, `disabled`, `checked`, `name`, `min`, `max`, `step`, `required`, `readOnly`, `multiple`, `accept`, `autoComplete`, `autoFocus` |
+| `form`       | `action`, `method`, `encType`, `noValidate`, `target`, `name`             |
+| `a`          | `href`, `target`, `rel`, `download`                                       |
+| `img`        | `src`, `alt`, `width`, `height`, `loading`, `decoding`                    |
+| `label`      | `for` / `htmlFor`, `form`                                                 |
+| `select`     | `value`, `multiple`, `size`, `disabled`, `required`, `name`               |
+| `option`     | `value`, `selected`, `disabled`, `label`                                  |
+| `textarea`   | `value`, `placeholder`, `rows`, `cols`, `disabled`, `required`, `readOnly`, `name`, `autoFocus`, `resize` |
+| `th`         | `colSpan`, `rowSpan`, `scope`                                             |
+| `td`         | `colSpan`, `rowSpan`                                                      |
 
 **Supported HTML elements:**
 
 `div`, `span`, `p`, `h1`–`h6`, `button`, `input`, `form`, `ul`, `ol`, `li`, `a`, `img`, `section`, `header`, `main`, `footer`, `nav`, `article`, `aside`, `label`, `select`, `option`, `textarea`, `table`, `thead`, `tbody`, `tfoot`, `tr`, `th`, `td`, `pre`, `code`, `strong`, `em`, `small`, `hr`, `br`
 
+Any unknown element falls back to `HTMLAttributes` via the index signature.
+
 ---
 
-## Examples
+## Example
 
 ```tsx
-// Class component
 @Component()
-class Card extends BaseComponent {
+class Card extends StatefulComponent {
   @Prop() title = "";
   @Slot() default?: Children;
 
@@ -154,14 +191,4 @@ class Card extends BaseComponent {
     );
   }
 }
-
-// Function component
-function Badge({ label, color = "blue" }: { label: string; color?: string }) {
-  return <span class={`badge badge-${color}`}>{label}</span>;
-}
-
-// Usage
-<Card title="Hello">
-  <Badge label="New" color="green" />
-</Card>;
 ```

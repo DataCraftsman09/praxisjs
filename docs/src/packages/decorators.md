@@ -30,11 +30,11 @@ Marks a class as a PraxisJS component.
 
 ```ts
 import { Component, Slot } from '@praxisjs/decorators'
-import { BaseComponent } from '@praxisjs/core'
+import { StatefulComponent } from '@praxisjs/core'
 import type { Children } from '@praxisjs/shared'
 
 @Component()
-class MyButton extends BaseComponent {
+class MyButton extends StatefulComponent {
   @Slot() default?: Children
 
   render() {
@@ -53,7 +53,7 @@ Declares an external prop. The value comes from the parent; the decorated proper
 
 ```ts
 @Component()
-class Card extends BaseComponent {
+class Card extends StatefulComponent {
   @Prop() title = 'Untitled'
   @Prop() elevated = false
 
@@ -69,7 +69,7 @@ Declares a reactive signal property. The getter returns the current value; the s
 
 ```ts
 @Component()
-class Toggle extends BaseComponent {
+class Toggle extends StatefulComponent {
   @State() open = false
 
   render() {
@@ -94,10 +94,10 @@ Declares a reactive property backed by `localStorage`. Works like `@State()` but
 
 ```ts
 import { Component, Persisted } from '@praxisjs/decorators'
-import { BaseComponent } from '@praxisjs/core'
+import { StatefulComponent } from '@praxisjs/core'
 
 @Component()
-class Settings extends BaseComponent {
+class Settings extends StatefulComponent {
   @Persisted() theme = 'light'
   @Persisted('app:count') count = 0
 
@@ -144,7 +144,7 @@ Observes one or more `@State`, `@Prop`, or `@Computed` properties. The decorated
 import { Watch, WatchVal } from "@praxisjs/decorators";
 
 @Component()
-class Search extends BaseComponent {
+class Search extends StatefulComponent {
   @State() query = "";
 
   @Watch("query")
@@ -174,7 +174,7 @@ Calls the decorated method exactly once, the first time the named property becom
 
 ```ts
 @Component()
-class Loader extends BaseComponent {
+class Loader extends StatefulComponent {
   @State() data: string[] | null = null;
 
   @When("data")
@@ -190,7 +190,7 @@ Adds undo/redo to a `@State` property. Accessible as `{propName}History`. Defaul
 
 ```ts
 @Component()
-class Editor extends BaseComponent {
+class Editor extends StatefulComponent {
   @History(100)
   @State()
   text = "";
@@ -213,7 +213,7 @@ interface Editor extends WithHistory<Editor, "text"> {}
 
 // Option 2: declare field (inside the class)
 @Component()
-class Editor extends BaseComponent {
+class Editor extends StatefulComponent {
   @History(100)
   @State()
   text = "";
@@ -226,83 +226,6 @@ The `{prop}History` object exposes: `undo()`, `redo()`, `canUndo`, `canRedo`, `v
 
 ---
 
-## Lifecycle Hooks
-
-Lifecycle hooks can be used as class methods (via inheritance) or as standalone functions inside `onMount` / other hooks.
-
-### Functional hooks
-
-```ts
-import { onMount, onUnmount, onBeforeMount, onError } from '@praxisjs/core'
-import { Component } from '@praxisjs/decorators'
-import { BaseComponent } from '@praxisjs/core'
-
-@Component()
-class Timer extends BaseComponent {
-  render() {
-    onMount(() => {
-      const id = setInterval(() => console.log('tick'), 1000)
-      onUnmount(() => clearInterval(id))
-    })
-    return <div />
-  }
-}
-```
-
-| Hook                | When it runs                                       |
-| ------------------- | -------------------------------------------------- |
-| `onBeforeMount(fn)` | Before first render                                |
-| `onMount(fn)`       | After first DOM insertion                          |
-| `onUnmount(fn)`     | When component is removed from DOM                 |
-| `onError(fn)`       | When an uncaught error occurs inside the component |
-
-### Class methods (via `BaseComponent`)
-
-Override directly on the class:
-
-```ts
-@Component()
-class MyComponent extends BaseComponent {
-  onMount() {
-    console.log('mounted')
-  }
-  onUnmount() {
-    console.log('unmounted')
-  }
-  render() { return <div /> }
-}
-```
-
-### `@LifeCycle`
-
-Development-only class decorator that validates lifecycle hook method names. Any method starting with `on` that is not a recognized lifecycle hook triggers a `console.warn`.
-
-::: info
-`@LifeCycle` is a no-op in production (`process.env.NODE_ENV === 'production'`). It is purely a development aid and has zero runtime cost when deployed.
-:::
-
-```ts
-import { LifeCycle } from '@praxisjs/decorators'
-import { BaseComponent } from '@praxisjs/core'
-
-@LifeCycle()
-@Component()
-class MyComponent extends BaseComponent {
-  onMount() {
-    console.log('mounted')
-  }
-
-  // Typo — will warn: "onMoont" is not a recognized lifecycle hook
-  onMoont() {}
-
-  render() { return <div /> }
-}
-```
-
-Valid hooks: `onBeforeMount`, `onMount`, `onUnmount`, `onError`.
-
----
-
 ## Events & Slots
 
 ### `@Emit(propName)`
@@ -311,7 +234,7 @@ Binds the decorated method and calls the named prop callback with its return val
 
 ```ts
 @Component()
-class Input extends BaseComponent {
+class Input extends StatefulComponent {
   @Prop() onChange?: (value: string) => void
   @State() value = ''
 
@@ -335,7 +258,7 @@ Subscribes the decorated method to a `Command` prop. Automatically unsubscribes 
 import { Command, createCommand } from '@praxisjs/decorators'
 
 @Component()
-class Modal extends BaseComponent {
+class Modal extends StatefulComponent {
   @Prop() close?: Command
 
   @OnCommand('close')
@@ -362,7 +285,7 @@ Declares a named slot. The getter returns the distributed children for that slot
 
 ```ts
 @Component()
-class Layout extends BaseComponent {
+class Layout extends StatefulComponent {
   @Slot() default!: Children
   @Slot('header') header!: Children
   @Slot('footer') footer!: Children
@@ -395,57 +318,6 @@ reset.subscribe(() => console.log("reset!"));
 
 ## Performance Decorators
 
-### `@Memoize(areEqual?)`
-
-Class-level decorator that skips re-renders when the component's resolved props have not changed since the last render **and** no `@State` property was written. Equivalent to `React.memo`.
-
-The optional `areEqual(prev, next)` function receives the previous and next resolved prop values and must return `true` when the component should **not** re-render. Defaults to a shallow (`Object.is`) equality check over all props.
-
-```ts
-import { Memoize, Component, Prop } from '@praxisjs/decorators'
-import { BaseComponent } from '@praxisjs/core'
-
-@Memoize()
-@Component()
-class Avatar extends BaseComponent {
-  @Prop() url = ''
-  @Prop() size = 48
-
-  render() {
-    return <img src={() => this.url} width={() => this.size} />
-  }
-}
-```
-
-If `url` and `size` haven't changed since the last render, the component skips its render entirely. Internal `@State` changes always trigger a re-render regardless.
-
-**Custom equality — deep comparison for object props:**
-
-```ts
-function deepEqual(
-  prev: Record<string, unknown>,
-  next: Record<string, unknown>,
-): boolean {
-  return JSON.stringify(prev) === JSON.stringify(next)
-}
-
-@Memoize(deepEqual)
-@Component()
-class Chart extends BaseComponent {
-  @Prop() data: DataPoint[] = []
-
-  render() { return <canvas /> }
-}
-```
-
-With `deepEqual`, passing a new array reference with the same contents does **not** trigger a re-render.
-
-**How it works:**
-
-- The decorator sets `_isMemorized = true` and stores `_arePropsEqual` on the constructor.
-- The renderer resolves any function-valued props (signals passed as props) on each re-render cycle, then compares the resolved values against the previous render's snapshot.
-- A `_stateDirty` flag on the instance ensures that `@State` writes always bypass the memoize check.
-
 ### `@Lazy(placeholder?)`
 
 Defers rendering the component until it enters the viewport. Shows an empty placeholder element while off-screen.
@@ -453,7 +325,7 @@ Defers rendering the component until it enters the viewport. Shows an empty plac
 ```ts
 @Lazy(300)  // 300px placeholder height
 @Component()
-class HeavyChart extends BaseComponent {
+class HeavyChart extends StatefulComponent {
   render() { return <canvas /> }
 }
 ```
@@ -465,7 +337,7 @@ Virtualizes rendering for large lists. Only items in the visible viewport (plus 
 ```ts
 @Virtual(48, 5)
 @Component()
-class UserList extends BaseComponent {
+class UserList extends StatefulComponent {
   @Prop() items: User[] = []
 
   renderItem(item: User, index: number) {

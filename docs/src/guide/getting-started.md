@@ -137,10 +137,10 @@ Configure TypeScript to use the PraxisJS JSX runtime:
 
 ```tsx
 import { Component, State, Prop } from "@praxisjs/decorators";
-import { BaseComponent } from "@praxisjs/core";
+import { StatefulComponent } from "@praxisjs/core";
 
 @Component()
-class Counter extends BaseComponent {
+class Counter extends StatefulComponent {
   @Prop() initialCount = 0;
   @State() count = 0;
 
@@ -162,9 +162,9 @@ class Counter extends BaseComponent {
 ### Mounting the app
 
 ```ts
-import { render } from '@praxisjs/runtime'
+import { render } from "@praxisjs/runtime";
 
-render(<Counter initialCount={0} />, document.getElementById('app')!)
+render(() => <Counter initialCount={0} />, document.getElementById("app")!);
 ```
 
 ---
@@ -173,11 +173,11 @@ render(<Counter initialCount={0} />, document.getElementById('app')!)
 
 | Package                              | Purpose                                                         |
 | ------------------------------------ | --------------------------------------------------------------- |
-| [core](/packages/core)               | Reactive primitives: `signal`, `computed`, `effect`, `resource` |
+| [core](/packages/core)               | Base classes `StatefulComponent`, `StatelessComponent`; internally coordinates signals, computed, effects and async resources |
 | [composables](/packages/composables) | DOM and browser composition utilities                           |
 | [decorators](/packages/decorators)   | Class decorators for components                                 |
 | [jsx](/packages/jsx)                 | JSX runtime and type definitions                                |
-| [runtime](/packages/runtime)         | VNode rendering engine                                          |
+| [runtime](/packages/runtime)         | DOM rendering engine and scope management                       |
 | [store](/packages/store)             | Reactive state management                                       |
 | [router](/packages/router)           | Client-side routing                                             |
 | [motion](/packages/motion)           | Animations: tweens, springs, keyframes                          |

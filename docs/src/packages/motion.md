@@ -176,7 +176,7 @@ Marks a `@State` property as animated, so changes transition smoothly instead of
 import { Animate } from '@praxisjs/motion'
 
 @Component()
-class ProgressBar extends BaseComponent {
+class ProgressBar extends StatefulComponent {
   @Animate({ duration: 500, easing: 'easeOut' })
   @State() progress = 0
 

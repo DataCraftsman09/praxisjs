@@ -20,368 +20,156 @@ yarn add @praxisjs/core
 
 :::
 
-Reactive primitives that power the entire framework. All state, derivations, and side effects flow through signals.
+Base classes for PraxisJS class components. Exported from `@praxisjs/core`.
 
-## Signals
+## StatefulComponent
 
-### `signal<T>(initialValue)`
-
-Creates a reactive value. When the value changes, all subscribers and effects that read it are automatically re-executed.
+Abstract base class for class components that use decorators (`@State`, `@Prop`, etc.). Provides the props system and lifecycle method stubs.
 
 ```ts
-import { signal } from '@praxisjs/core'
-
-const count = signal(0)
-
-count()              // 0
-count.set(1)         // set directly
-count.update(n => n + 1)  // update from previous value
-count.subscribe(v => console.log(v))  // listen for changes
-```
-
-### `computed<T>(fn)`
-
-Creates a derived value that recalculates lazily whenever its signal dependencies change. The result is cached between reads.
-
-```ts
-import { signal, computed } from '@praxisjs/core'
-
-const count = signal(2)
-const doubled = computed(() => count() * 2)
-
-doubled()  // 4
-count.set(5)
-doubled()  // 10
-```
-
-### `effect(fn)`
-
-Runs a function immediately and re-runs it whenever any signal read inside it changes. The function can return a cleanup callback.
-
-```ts
-import { signal, effect } from '@praxisjs/core'
-
-const name = signal('Alice')
-
-const stop = effect(() => {
-  console.log('Hello,', name())
-  return () => console.log('cleanup')
-})
-
-name.set('Bob')  // logs "Hello, Bob"
-stop()           // stops the effect
-```
-
-### `batch(fn)`
-
-Defers all signal notifications until the function completes. Useful when updating multiple signals that drive the same UI.
-
-```ts
-import { signal, batch } from '@praxisjs/core'
-
-const x = signal(0)
-const y = signal(0)
-
-batch(() => {
-  x.set(10)
-  y.set(20)
-  // subscribers notified once here, not twice
-})
-```
-
----
-
-## Persistence
-
-### `persistedSignal<T>(key, initial, options?)`
-
-A signal that automatically reads from and writes to `localStorage`. Updates sync across browser tabs.
-
-```ts
-import { persistedSignal } from '@praxisjs/core'
-
-const theme = persistedSignal('theme', 'light')
-
-theme.set('dark')
-// localStorage.getItem('theme') === '"dark"'
-```
-
-**Options:**
-
-| Option | Type | Description |
-|--------|------|-------------|
-| `serialize` | `(v: T) => string` | Custom serializer (default: `JSON.stringify`) |
-| `deserialize` | `(s: string) => T` | Custom deserializer (default: `JSON.parse`) |
-| `syncTabs` | `boolean` | Listen to `storage` events from other tabs (default: `true`) |
-
----
-
-## Utilities
-
-### `peek(source)`
-
-Reads a signal or computed value **without registering a reactive dependency**. Equivalent to Solid's `untracked()`.
-
-Use this when you need the current value of a signal inside an effect or `render()` but deliberately do **not** want that signal to trigger a re-run when it changes.
-
-```ts
-import { signal, effect, peek } from '@praxisjs/core'
-
-const count = signal(0)
-const multiplier = signal(2)
-
-effect(() => {
-  // Re-runs only when `count` changes.
-  // `multiplier` is read without creating a dependency.
-  const m = peek(multiplier)
-  console.log(count() * m)
-})
-
-multiplier.set(10)  // effect does NOT re-run
-count.set(5)        // effect re-runs: logs 5 * 10 = 50
-```
-
-Works with any callable: `Signal`, `Computed`, or a plain getter function.
-
-```ts
-const doubled = computed(() => count() * 2)
-
-// Read computed value without subscribing to it
-const snapshot = peek(doubled)
-```
-
-### `when(source, fn)`
-
-Executes `fn` exactly once, the first time `source` becomes truthy. Returns a cancel function.
-
-```ts
-import { signal, when } from '@praxisjs/core'
-
-const ready = signal(false)
-
-const cancel = when(ready, () => {
-  console.log('ready!')
-})
-
-ready.set(true)  // logs "ready!" once
-```
-
-### `until(source)`
-
-Returns a `Promise` that resolves with the first truthy value from `source`.
-
-```ts
-import { signal, until } from '@praxisjs/core'
-
-const data = signal<string | null>(null)
-
-const value = await until(data)
-console.log(value)  // string (never null)
-```
-
-### `debounced(source, ms)`
-
-Creates a derived signal that only updates after `ms` milliseconds of inactivity from `source`.
-
-```ts
-import { signal, debounced } from '@praxisjs/core'
-
-const input = signal('')
-const debouncedInput = debounced(input, 300)
-
-// debouncedInput() updates 300ms after input stops changing
-```
-
-### `history(source, limit?)`
-
-Maintains an undo/redo history for a signal. Defaults to 50 entries.
-
-```ts
-import { signal, history } from '@praxisjs/core'
-
-const text = signal('hello')
-const h = history(text)
-
-text.set('world')
-text.set('!')
-
-h.canUndo()  // true
-h.undo()
-text()       // 'world'
-h.redo()
-text()       // '!'
-h.values()   // ['hello', 'world', '!']
-h.clear()
-```
-
-**Returned object:**
-
-| Property | Type | Description |
-|----------|------|-------------|
-| `values` | `Computed<T[]>` | Full history array |
-| `current` | `Computed<T>` | Current value |
-| `canUndo` | `Computed<boolean>` | Whether undo is available |
-| `canRedo` | `Computed<boolean>` | Whether redo is available |
-| `undo()` | `() => void` | Go back one step |
-| `redo()` | `() => void` | Go forward one step |
-| `clear()` | `() => void` | Reset history |
-
----
-
-## Async Resources
-
-### `resource<T>(fetcher, options?)`
-
-Manages async data fetching. Automatically re-fetches when any signal read inside `fetcher` changes.
-
-```ts
-import { signal, resource } from '@praxisjs/core'
-
-const userId = signal(1)
-
-const user = resource(async () => {
-  const res = await fetch(`/api/users/${userId()}`)
-  return res.json()
-})
-
-user.pending()  // true while fetching
-user.data()     // resolved data
-user.error()    // Error if rejected
-
-user.refetch()      // manually re-trigger
-user.cancel()       // cancel in-flight request
-user.mutate({ name: 'Alice' })  // optimistic update
-```
-
-**Options:**
-
-| Option | Type | Description |
-|--------|------|-------------|
-| `initialData` | `T` | Data before first fetch |
-| `immediate` | `boolean` | Fetch on creation (default: `true`) |
-| `keepPreviousData` | `boolean` | Keep old data while refetching |
-
-**Returned object:**
-
-| Property | Type | Description |
-|----------|------|-------------|
-| `data` | `Computed<T \| null>` | Resolved value |
-| `pending` | `Computed<boolean>` | Fetch in progress |
-| `error` | `Computed<unknown>` | Last error |
-| `status` | `Computed<'idle' \| 'pending' \| 'success' \| 'error'>` | Current state |
-| `refetch()` | `() => void` | Re-run the fetcher |
-| `cancel()` | `() => void` | Abort current fetch |
-| `mutate(data)` | `(T) => void` | Directly set data |
-
-### `createResource<P, T>(param, fetcher, options?)`
-
-Convenience wrapper for a resource driven by a single parameter signal.
-
-```ts
-import { signal, createResource } from '@praxisjs/core'
-
-const userId = signal(1)
-
-const user = createResource(userId, async (id) => {
-  const res = await fetch(`/api/users/${id}`)
-  return res.json()
-})
-```
-
-Equivalent to `resource(() => fetcher(param()))` but with cleaner intent.
-
----
-
-## Lifecycle Hooks
-
-These hooks are available **only inside function components**. The renderer collects them during the single function invocation and wires them into the component's lifecycle automatically.
-
-### `onBeforeMount(fn)`
-
-Runs synchronously before the returned VNode is inserted into the DOM.
-
-```ts
-import { onBeforeMount } from '@praxisjs/core'
-
-function Banner() {
-  onBeforeMount(() => {
-    console.log('about to mount')
-  })
-  return <div class="banner" />
+import { StatefulComponent } from "@praxisjs/core";
+
+abstract class StatefulComponent {
+  abstract render(): Node | Node[] | null;
+
+  onBeforeMount?(): void;
+  onMount?(): void;
+  onUnmount?(): void;
+  onError?(error: Error): void;
 }
 ```
 
-### `onMount(fn)`
+### Lifecycle Hooks
 
-Runs after the component's DOM nodes have been inserted. Equivalent to `onMount()` on a class component.
+Override these methods directly on the class:
 
 ```ts
-import { onMount, onUnmount, signal } from '@praxisjs/core'
-
-function Clock() {
-  const time = signal(new Date())
-
-  onMount(() => {
-    const id = setInterval(() => time.set(new Date()), 1000)
-    onUnmount(() => clearInterval(id))
-  })
-
-  return () => <p>{time().toLocaleTimeString()}</p>
+@Component()
+class MyComponent extends StatefulComponent {
+  onMount() {
+    console.log('mounted')
+  }
+  onUnmount() {
+    console.log('unmounted')
+  }
+  render() { return <div /> }
 }
 ```
 
-`onUnmount` can be called inside `onMount` to co-locate setup and teardown.
+| Method            | When it runs                           |
+| ----------------- | -------------------------------------- |
+| `onBeforeMount()` | Before first render                    |
+| `onMount()`       | After first DOM insertion              |
+| `onUnmount()`     | When removed from DOM                  |
+| `onError(err)`    | On uncaught error inside the component |
 
-### `onUnmount(fn)`
+## StatelessComponent
 
-Runs when the component is removed from the DOM. Typically used for cleanup.
+Abstract base class for typed, prop-only class components that do not use decorator-based state. Accepts a generic type parameter for strongly-typed props.
 
 ```ts
-import { onUnmount } from '@praxisjs/core'
+import { StatelessComponent } from "@praxisjs/core";
 
-function Tracker() {
-  onUnmount(() => {
-    analytics.track('component_removed')
-  })
-  return <div />
+abstract class StatelessComponent<T extends object = {}> {
+  abstract render(): Node | Node[] | null;
+
+  readonly props: T;
+
+  onBeforeMount?(): void;
+  onMount?(): void;
+  onUnmount?(): void;
+  onError?(error: Error): void;
 }
 ```
 
-### `onError(fn)`
-
-Called if an error is thrown during the function body execution. Receives the caught error.
+**Example:**
 
 ```ts
-import { onError } from '@praxisjs/core'
+import { StatelessComponent } from "@praxisjs/core";
+import { Component } from "@praxisjs/decorators";
 
-function Risky() {
-  onError((err) => {
-    console.error('render failed:', err)
-  })
-  return <div />
+@Component()
+class Badge extends StatelessComponent<{ label: string; color?: string }> {
+  render() {
+    return (
+      <span style={() => `color: ${this.props.color ?? "inherit"}`}>
+        {this.props.label}
+      </span>
+    );
+  }
 }
 ```
 
----
+Use `StatelessComponent` when the component derives everything from its props and has no internal reactive state.
 
-## BaseComponent
+## resource()
 
-Abstract base class that all class components extend. Provides the props system and lifecycle method stubs.
+Creates a reactive async resource that tracks the state of a promise-based fetch operation. Returns an object with computed signals for `data`, `pending`, `error`, and `status`.
 
 ```ts
-import { BaseComponent } from '@praxisjs/core'
+import { resource } from "@praxisjs/core";
 
-abstract class BaseComponent {
-  abstract render(): VNode | null
+const todos = resource(() => fetch("/api/todos").then((r) => r.json()));
 
-  onBeforeMount?(): void
-  onMount?(): void
-  onBeforeUpdate?(prevProps: Record<string, any>): void
-  onUpdate?(prevProps: Record<string, any>): void
-  onAfterUpdate?(prevProps: Record<string, any>): void
-  onUnmount?(): void
-  onError?(error: Error): void
+todos.data; // Computed<T | null>
+todos.pending; // Computed<boolean>
+todos.error; // Computed<unknown>
+todos.status; // Computed<"idle" | "pending" | "success" | "error">
+```
+
+### Options
+
+```ts
+interface ResourceOptions<T> {
+  initialData?: T; // Initial value before first fetch (default: null)
+  immediate?: boolean; // Run fetcher immediately (default: true)
+  keepPreviousData?: boolean; // Keep old data while refetching (default: false)
 }
 ```
 
-> These hooks have no effect when called outside of a function component — a warning is emitted in development.
+### Methods
+
+| Method         | Description                                                 |
+| -------------- | ----------------------------------------------------------- |
+| `refetch()`    | Re-runs the fetcher                                         |
+| `cancel()`     | Cancels any in-flight request and resets status to `"idle"` |
+| `mutate(data)` | Optimistically sets data without calling the fetcher        |
+
+### Example
+
+```tsx
+@Component()
+class UserList extends StatefulComponent {
+  users = resource(() => fetch("/api/users").then((r) => r.json()), {
+    keepPreviousData: true,
+  });
+
+  render() {
+    if (this.users.pending()) return <p>Loading...</p>;
+    if (this.users.error()) return <p>Error loading users.</p>;
+    return (
+      <ul>
+        {this.users.data()?.map((u) => (
+          <li>{u.name}</li>
+        ))}
+      </ul>
+    );
+  }
+}
+```
+
+## createResource()
+
+Like `resource()`, but accepts a reactive signal as its first argument. The fetcher is re-run automatically whenever the signal value changes.
+
+```ts
+import { createResource } from "@praxisjs/core";
+import { signal } from "@praxisjs/decorators";
+
+const userId = signal(1);
+const user = createResource(userId, (id) =>
+  fetch(`/api/users/${id}`).then((r) => r.json()),
+);
+```
+
+When `userId` changes, `user` automatically refetches with the new value.
